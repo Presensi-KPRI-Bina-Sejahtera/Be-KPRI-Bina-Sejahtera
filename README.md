@@ -11,7 +11,6 @@
 <p align="center">
   <a href="#fitur-utama">Fitur</a> • 
   <a href="#teknologi">Teknologi</a> • 
-  <a href="#instalasi">Instalasi</a> • 
   <a href="#lisensi">Lisensi</a>
 </p>
 
