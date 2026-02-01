@@ -1,59 +1,150 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://pasla.jambiprov.go.id/wp-content/uploads/2023/02/lambang-koperasi.png" width="120" alt="KPRI Logo">
 </p>
 
-## About Laravel
+<h1 align="center">Sistem Presensi KPRI Bina Sejahtera</h1>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  <strong>Backend API untuk Manajemen Presensi Karyawan KPRI Bina Sejahtera</strong>
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<p align="center">
+  <a href="#fitur-utama">Fitur</a> • 
+  <a href="#teknologi">Teknologi</a> • 
+  <a href="#instalasi">Instalasi</a> • 
+  <a href="#lisensi">Lisensi</a>
+</p>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=flat-square&logo=laravel" alt="Laravel">
+  <img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat-square&logo=php" alt="PHP">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
+  <img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" alt="Status">
+</p>
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Sistem backend utama untuk KPRI Bina Sejahtera yang dibangun menggunakan Laravel. Repository ini berfungsi sebagai sistem manajemen presensi karyawan, lokasi, dan pelaporan kehadiran berbasis API.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Deskripsi
 
-## Laravel Sponsors
+Proyek ini adalah repositori default untuk sistem presensi internal KPRI Bina Sejahtera. Menangani fitur-fitur utama seperti manajemen lokasi presensi, pencatatan kehadiran, serta pelaporan dan monitoring aktivitas karyawan.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+<p align="center">
+  <img src="https://perindustrian.gunungkidulkab.go.id/wp-content/uploads/2024/03/Snapinsta.app_431492495_721723126778649_1757782079401867317_n_1080-1-1024x535-1.jpg" width="400" alt="Presensi Dashboard">
+</p>
 
-### Premium Partners
+## Fitur Utama
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- 📍 Manajemen Lokasi Presensi (toko/cabang)
+- 👥 Database Karyawan & Role Management
+- ⏰ Pencatatan Kehadiran (datang/pulang, lokasi, jarak)
+- 📊 Dashboard Admin (API endpoint)
+- 📈 Sistem Pelaporan Kehadiran & Rekap
 
-## Contributing
+## Teknologi
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Backend
+- **Framework**: Laravel 12.x (API Only)
+- **Authentication**: Sanctum Token-Based Auth
+- **Database**: MySQL, PostgreSQL, SQLite
+- **PHP Version**: ^8.2
 
-## Code of Conduct
+### Dependencies
+- Laravel Sanctum (API Authentication)
+- Laravel Tinker (REPL)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Instalasi
 
-## Security Vulnerabilities
+### Prasyarat
+- PHP 8.2+
+- Composer
+- Git
+- Database (MySQL/PostgreSQL/SQLite)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Setup
 
-## License
+1. Clone repository
+```bash
+git clone <repository-url>
+cd Be-KPRI-Bina-Sejahtera
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+2. Install dependencies
+```bash
+composer install
+```
+
+3. Setup environment
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. Setup database
+```bash
+php artisan migrate:fresh --seed
+```
+
+5. Run development server
+```bash
+php artisan serve
+```
+
+API akan running di `http://localhost:8000/api`
+
+## Struktur Database
+
+### Tabel Utama
+- **users**: Data karyawan & admin
+- **presence_locations**: Lokasi presensi (toko/cabang)
+- **attendances**: Catatan kehadiran karyawan
+- **cashflows**: Laporan arus kas
+- **deposits**: Simpanan karyawan
+
+## API Endpoints
+
+### Health Check
+```
+GET /api/health
+```
+
+### User Profile (Authenticated)
+```
+GET /api/me
+Authorization: Bearer {token}
+```
+
+## Development
+
+### Running Tests
+```bash
+php artisan test
+```
+
+### Artisan Commands
+```bash
+# Generate API documentation
+php artisan route:list
+
+# Fresh migration with seed
+php artisan migrate:fresh --seed
+```
+
+## Kontribusi
+
+Kontribusi dipersilahkan! Silakan buat branch baru untuk fitur atau bug fix:
+
+```bash
+git checkout -b feature/nama-fitur
+# atau
+git checkout -b bugfix/deskripsi-bug
+```
+
+## Support
+
+Untuk pertanyaan atau issues, silakan hubungi tim development KPRI Bina Sejahtera.
+
+## Lisensi
+
+© 2026 KPRI Bina Sejahtera. Seluruh hak cipta dilindungi undang-undang.
