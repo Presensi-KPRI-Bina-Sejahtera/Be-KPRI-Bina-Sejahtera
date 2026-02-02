@@ -40,8 +40,20 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'auth:sanctum' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
         // ...existing code...
+    ];
+
+    /**
+     * The application's middleware aliases.
+     *
+     * Laravel 11+ uses middleware aliases (instead of routeMiddleware).
+     *
+     * @var array<string, class-string>
+     */
+    protected $middlewareAliases = [
+        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
     ];
 }

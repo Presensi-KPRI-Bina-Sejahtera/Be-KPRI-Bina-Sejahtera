@@ -24,7 +24,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('presence_location_id')
                 ->constrained('presence_locations')
-                ->restrictOnDelete();
+                ->restrictOnDelete()
+                ->default(1);
 
             $table->string('username')->nullable()->unique();
             $table->string('name');

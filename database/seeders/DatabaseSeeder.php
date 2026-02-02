@@ -32,5 +32,13 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'email' => 'test@example.com',
         ]);
+
+        User::factory()->create([
+            'presence_location_id' => $location->id,
+            'username' => 'employee1',
+            'name' => 'Employee One',
+            'role' => 'employee',
+            'email' => 'test2@example.com',
+        ]);
     }
 }

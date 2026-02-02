@@ -81,6 +81,13 @@ cp .env.example .env
 php artisan key:generate
 ```
 
+Untuk login dengan Google, isi env berikut di `.env`:
+
+```env
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+```
+
 4. Setup database
 ```bash
 php artisan migrate:fresh --seed
@@ -113,6 +120,22 @@ GET /api/health
 ```
 GET /api/me
 Authorization: Bearer {token}
+```
+
+### Auth (Public)
+```
+POST /api/auth/login
+POST /api/auth/login-google
+```
+
+Body untuk `POST /api/auth/login-google`:
+
+```json
+{
+  "id_token": "<google-id-token>",
+  "presence_location_id": 1,
+  "device_name": "android"
+}
 ```
 
 ## Development
