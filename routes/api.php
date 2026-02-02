@@ -30,9 +30,18 @@ Route::prefix('auth')->group(function () {
 });
 
 /**
- * Admin-only routes go here.
+ * Admin api routes.
  */
 Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
+
+    /**
+     * User management routes.
+     * Get /api/admin/user -> list all users
+     * Post /api/admin/user -> create new user
+     * Put /api/admin/user/{id} -> update user by id
+     * Delete /api/admin/user/{id} -> delete user by id
+     * Get /api/admin/user/dropdown -> get users for dropdown
+     */
     Route::prefix('user')->group(function () {
         Route::get('/', [UserController::class, 'index']);
         Route::post('/', [UserController::class, 'store']);
