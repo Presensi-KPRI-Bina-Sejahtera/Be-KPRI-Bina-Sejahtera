@@ -20,6 +20,7 @@ return new class extends Migration
 
             $table->index('user_id');
             $table->index('date');
+            $table->index('type');
         });
     }
 
