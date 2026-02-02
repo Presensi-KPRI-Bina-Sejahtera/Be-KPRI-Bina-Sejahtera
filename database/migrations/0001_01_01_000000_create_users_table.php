@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('longitude')->nullable();
             $table->unsignedInteger('max_distance')->default(50);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('users', function (Blueprint $table) {
@@ -38,6 +39,7 @@ return new class extends Migration
             $table->string('id_provider')->nullable();
             $table->string('password')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('presence_location_id');
             $table->index('role');

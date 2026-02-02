@@ -32,5 +32,10 @@ Route::prefix('auth')->group(function () {
  * Admin-only routes go here.
  */
 Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
-    // Example: Manage users
+    Route::prefix('user')->group(function () {
+        Route::get('/', [UserController::class, 'index']);
+        Route::post('/', [UserController::class, 'store']);
+        Route::put('/{id}', [UserController::class, 'update']);
+        Route::delete('/{id}', [UserController::class, 'destroy']);
+    });
 });
