@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('for_name');
+            $table->enum('type', ['simpanan', 'angsuran']);
             $table->date('date');
             $table->unsignedBigInteger('value');
             $table->string('verified_key')->nullable();

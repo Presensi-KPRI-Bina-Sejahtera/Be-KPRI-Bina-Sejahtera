@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // API-only: jangan redirect guest ke route('login') (route tidak ada), cukup biarkan jadi 401 JSON.
+        // API-only: jangan redirect guest ke route('login') (route ga ada), cukup biarkan jadi 401 JSON.
         $middleware->redirectGuestsTo(fn (Request $request) => null);
 
         $middleware->alias([
@@ -32,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (ValidationException $e, Request $request) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validasi gagal.',
+                'message' => $e->getMessage(),
                 'errors' => $e->errors(),
             ], 422);
         });
@@ -47,7 +47,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (ModelNotFoundException $e, Request $request) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Data tidak ditemukan.',
+                'message' => $e->getMessage() !== '' ? $e->getMessage() : 'Data tidak ditemukan.',
             ], 404);
         });
 
