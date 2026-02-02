@@ -20,11 +20,11 @@ class AuthController extends Controller
             'email' => ['required', 'string'],
             'password' => ['required', 'string', 'min:8'],
         ], [
-            'email.required' => 'Email atau username wajib diisi.',
-            'email.string' => 'Email atau username harus berupa teks.',
-            'password.required' => 'Password wajib diisi.',
-            'password.string' => 'Password harus berupa teks.',
-            'password.min' => 'Password minimal :min karakter.',
+            'email.required' => 'Email atau username wajib diisi',
+            'email.string' => 'Email atau username harus berupa teks',
+            'password.required' => 'Password wajib diisi',
+            'password.string' => 'Password harus berupa teks',
+            'password.min' => 'Password minimal :min karakter',
         ]);
 
         $email = $validated['email'];
@@ -36,7 +36,7 @@ class AuthController extends Controller
         if (!$user || !$user->password || !Hash::check($validated['password'], $user->password)) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Email/username atau password salah.',
+                'message' => 'Email/username atau password salah',
             ], 401);
         }
 
@@ -50,7 +50,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Login berhasil.',
+            'message' => 'Login berhasil',
             'data' => [
                 'token_type' => 'Bearer',
                 'token' => $token,
@@ -65,16 +65,20 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Login menggunakan Google ID token.
+     * Post /api/auth/login-google
+     */
     public function loginGoogle(Request $request): Response
     {
         $validated = $request->validate([
             'id_token' => ['required', 'string'],
             'device_name' => ['sometimes', 'string', 'max:255'],
         ], [
-            'id_token.required' => 'ID token wajib diisi.',
-            'id_token.string' => 'ID token harus berupa teks.',
-            'device_name.string' => 'Device name harus berupa teks.',
-            'device_name.max' => 'Device name maksimal :max karakter.',
+            'id_token.required' => 'ID token wajib diisi',
+            'id_token.string' => 'ID token harus berupa teks',
+            'device_name.string' => 'Device name harus berupa teks',
+            'device_name.max' => 'Device name maksimal :max karakter',
         ]);
 
         $googleClientId = (string) config('services.google.client_id', '');
@@ -87,26 +91,26 @@ class AuthController extends Controller
         ]);
 
         if (!$tokenInfoResponse->successful()) {
-            abort(401, 'Google token tidak valid.');
+            abort(401, 'Google token tidak valid');
         }
 
         $payload = $tokenInfoResponse->json();
 
         if (($payload['aud'] ?? null) !== $googleClientId) {
-            abort(401, 'Google token audience tidak sesuai.');
+            abort(401, 'Google token audience tidak sesuai');
         }
 
         if (!isset($payload['email'], $payload['sub'])) {
-            abort(401, 'Google token payload tidak lengkap.');
+            abort(401, 'Google token payload tidak lengkap');
         }
 
         $user = User::query()->where('email', $payload['email'])->first();
         if (!$user) {
-            abort(404, 'Pengguna dengan email tersebut tidak ditemukan.');
+            abort(404, 'Pengguna dengan email tersebut tidak ditemukan');
         }
 
         $user->forceFill([
-            'profile_image' => $payload['picture'] ?? $user->profile_image,
+            'profile_image' => $user->profile_image ?: ($payload['picture'] ?? null),
             'provider' => 'google',
             'id_provider' => $payload['sub'],
         ])->save();
@@ -121,7 +125,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Login berhasil.',
+            'message' => 'Login berhasil',
             'data' => [
                 'token_type' => 'Bearer',
                 'token' => $token,
@@ -134,13 +138,17 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Ambil data user yang sedang login.
+     * Get /api/auth/me
+     */
     public function me(Request $request): Response
     {
         $user = $request->user();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Berhasil mengambil data user.',
+            'message' => 'Berhasil mengambil data user',
             'data' => [
                 'id' => (int) $user->id,
                 'name' => $user->name,
@@ -152,6 +160,10 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Logout user yang sedang login.
+     * Post /api/auth/logout
+     */
     public function logout(Request $request): Response
     {
         $user = $request->user();
@@ -165,7 +177,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Berhasil logout.',
+            'message' => 'Berhasil logout',
         ]);
     }
 }
