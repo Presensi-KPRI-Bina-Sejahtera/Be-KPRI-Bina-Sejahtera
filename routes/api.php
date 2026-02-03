@@ -58,6 +58,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
      * Put /api/admin/presence-location/{id} -> update presence location by id
      * Delete /api/admin/presence-location/{id} -> delete presence location by id
      * Get /api/admin/presence-location/dropdown -> get presence locations for dropdown
+     * Get /api/admin/presence-location/address -> get address from coordinates
      */
     Route::prefix('presence-location')->group(function () {
         Route::get('/', [PresenceLocationController::class, 'index']);
@@ -65,5 +66,6 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
         Route::put('/{id}', [PresenceLocationController::class, 'update']);
         Route::delete('/{id}', [PresenceLocationController::class, 'destroy']);
         Route::get('/dropdown', [PresenceLocationController::class, 'dropdown']);
+        Route::get('/address', [PresenceLocationController::class, 'getAddressFromCoordinatesApi']);
     });
 });

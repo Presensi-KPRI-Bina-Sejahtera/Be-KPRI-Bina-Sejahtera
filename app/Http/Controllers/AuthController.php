@@ -19,12 +19,15 @@ class AuthController extends Controller
         $validated = $request->validate([
             'email' => ['required', 'string'],
             'password' => ['required', 'string', 'min:8'],
+            'device_name' => ['sometimes', 'string', 'max:255'],
         ], [
             'email.required' => 'Email atau username wajib diisi',
             'email.string' => 'Email atau username harus berupa teks',
             'password.required' => 'Password wajib diisi',
             'password.string' => 'Password harus berupa teks',
             'password.min' => 'Password minimal :min karakter',
+            'device_name.string' => 'Device name harus berupa teks',
+            'device_name.max' => 'Device name maksimal :max karakter',
         ]);
 
         $email = $validated['email'];
@@ -40,12 +43,15 @@ class AuthController extends Controller
             ], 401);
         }
 
+
         $tokenName = $validated['device_name'] ?? 'api';
+        $isAndroid = stripos($tokenName, 'android') !== false;
+        $expiresAt = $isAndroid ? null : now()->addDay(3);
 
         $token = $user->createToken(
             name: $tokenName,
             abilities: ['*'],
-            expiresAt: now()->addDay(3)
+            expiresAt: $expiresAt
         )->plainTextToken;
 
         return response()->json([
@@ -115,12 +121,15 @@ class AuthController extends Controller
             'id_provider' => $payload['sub'],
         ])->save();
 
+
         $tokenName = $validated['device_name'] ?? 'google-login';
+        $isAndroid = stripos($tokenName, 'android') !== false;
+        $expiresAt = $isAndroid ? null : now()->addDay(3);
 
         $token = $user->createToken(
             name: $tokenName,
             abilities: ['*'],
-            expiresAt: now()->addDay(3)
+            expiresAt: $expiresAt
         )->plainTextToken;
 
         return response()->json([

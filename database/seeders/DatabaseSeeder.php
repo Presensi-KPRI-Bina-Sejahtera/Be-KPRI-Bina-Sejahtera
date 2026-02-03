@@ -16,16 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        $location = PresenceLocation::factory()->create([
+        $location = PresenceLocation::create([
             'name' => 'Toko Utama',
+            'address' => 'Alamat belum diisi',
             'latitude' => '-7.762250',
             'longitude' => '110.337500',
             'max_distance' => 50,
         ]);
 
-        User::factory()->create([
+        User::create([
             'presence_location_id' => $location->id,
             'username' => 'testuser',
             'name' => 'Test User',
@@ -33,7 +32,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-        User::factory()->create([
+        User::create([
             'presence_location_id' => $location->id,
             'username' => 'employee1',
             'name' => 'Employee One',
@@ -41,7 +40,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test2@example.com',
         ]);
 
-        User::factory()->create([
+        User::create([
             'presence_location_id' => $location->id,
             'username' => 'fauzan1',
             'name' => 'Fauzan Trisuladana',
@@ -49,7 +48,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'fauzantrisuladana@gmail.com',
         ]);
 
-        User::factory()->create([
+        User::create([
             'presence_location_id' => $location->id,
             'username' => 'fauzan2',
             'name' => 'Muhammad Fauzan Putra Trisuladana',
@@ -57,7 +56,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'muhammadfauzanputratrisuladana@mail.ugm.ac.id',
         ]);
 
-        User::factory()->create([
+        User::create([
             'presence_location_id' => $location->id,
             'username' => 'afif1',
             'name' => 'Abdullah Afif',
@@ -65,7 +64,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'abdullahafifh@gmail.com',
         ]);
 
-        User::factory()->create([
+        User::create([
             'presence_location_id' => $location->id,
             'username' => 'afif2',
             'name' => 'Afef Space',
@@ -73,7 +72,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'afefspace@gmail.com',
         ]);
 
-        User::factory()->create([
+        User::create([
             'presence_location_id' => $location->id,
             'username' => 'afif3',
             'name' => 'Catetan Saja',
@@ -81,7 +80,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'catetansaja@gmail.com',
         ]);
 
-        User::factory()->create([
+        User::create([
             'presence_location_id' => $location->id,
             'username' => 'rio1',
             'name' => 'Prihastomo Budisatrio',
