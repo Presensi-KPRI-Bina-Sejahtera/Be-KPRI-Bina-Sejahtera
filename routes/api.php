@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PresenceLocationController;
 use App\Http\Controllers\DepositManagerController;
+use App\Http\Controllers\CashflowManagerController;
 
 /**
  * Status check route.
@@ -78,5 +79,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     Route::prefix('deposit')->group(function () {
         Route::get('/', [DepositManagerController::class, 'index']);
         Route::patch('verify/{id}', [DepositManagerController::class, 'verify']);
+    });
+
+    Route::prefix('cashflow')->group(function () {
+        Route::get('/', [CashflowManagerController::class, 'index']);
     });
 });

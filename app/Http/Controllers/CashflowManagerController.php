@@ -1,0 +1,101 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Cashflow;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
+
+class CashflowManagerController extends Controller
+{
+    public function index(Request $request) : Response
+    {
+        $validated = $request->validate([
+            'per_page' => ['sometimes', 'integer', 'min:1'],
+            'search' => ['sometimes', 'string'],
+            'start_date' => ['sometimes', 'date'],
+            'end_date' => ['sometimes', 'date', 'after_or_equal:start_date'],
+            'type' => ['sometimes', 'string', 'in:angsuran,simpanan'],
+        ], [
+            'per_page.integer' => 'per_page harus berupa angka',
+            'per_page.min' => 'per_page minimal 1',
+            'search.string' => 'Search harus berupa teks',
+            'start_date.date' => 'Tanggal mulai harus berupa tanggal yang valid',
+            'end_date.date' => 'Tanggal selesai harus berupa tanggal yang valid',
+            'type.in' => 'Type harus salah satu dari: angsuran, simpanan',
+            'end_date.after_or_equal' => 'Tanggal selesai harus lebih besar atau sama dengan tanggal mulai',
+        ]);
+
+        $perPage = (int) ($validated['per_page'] ?? 10);
+        $search = $validated['search'] ?? null;
+        $types = $validated['type'] ?? null;
+
+        // Default: tanggal 1 bulan ini jika tidak ada start_date
+        $startDate = $validated['start_date'] ?? now()->startOfMonth()->toDateString();
+        $endDate = $validated['end_date'] ?? today()->toDateString();
+
+        $query = Cashflow::query()
+            ->with(['user:id,name,username,profile_image'])
+            ->orderBy('date', 'desc')
+            ->orderBy('id', 'desc');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->orWhereHas('user', function ($uq) use ($search) {
+                    $uq->where('name', 'like', "%{$search}%")
+                        ->orWhere('username', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        if (!empty($types)) {
+            $query->where('type', $types);
+        }
+
+        if ($startDate) {
+            $query->whereDate('date', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $query->whereDate('date', '<=', $endDate);
+        }
+
+        $cashflows = $query->paginate($perPage);
+
+        $cashflowData = collect($cashflows->items())->map(function (Cashflow $cashflow) {
+            return [
+                'id' => (int) $cashflow->id,
+                'user' => [
+                    'id' => (int) $cashflow->user->id,
+                    'name' => $cashflow->user->name,
+                    'username' => $cashflow->user->username,
+                    'profile_image' => $cashflow->user->profile_image,
+                ],
+                'type' => $cashflow->type,
+                'date' => $cashflow->date->format('Y-m-d'),
+                'value' => (int) $cashflow->value,
+            ];
+        });
+
+        // summary: sum value per type (hanya data di halaman ini)
+        $summary = [
+            'pemasukan' => (int) $cashflowData->where('type', 'pemasukan')->sum('value'),
+            'pengeluaran' => (int) $cashflowData->where('type', 'pengeluaran')->sum('value'),
+        ];
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Daftar cashflow berhasil diambil',
+            'data' => [
+                'current_page' => (int) $cashflows->currentPage(),
+                'last_page' => (int) $cashflows->lastPage(),
+                'per_page' => (int) $cashflows->perPage(),
+                'total' => (int) $cashflows->total(),
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'summary' => $summary,
+                'cashflows' => $cashflowData,
+            ],
+        ]);
+    }
+}

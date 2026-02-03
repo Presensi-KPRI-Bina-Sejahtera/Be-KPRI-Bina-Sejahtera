@@ -33,7 +33,7 @@ class PresenceLocationController extends Controller
      * Dapat alamat dari koordinat latitude dan longitude.
      * GET /api/admin/presence-location/address
      */
-    public function getAddressFromCoordinatesApi(Request $request)
+    public function getAddressFromCoordinatesApi(Request $request) : Response
     {
         $validated = $request->validate([
             'latitude' => ['required', 'numeric'],

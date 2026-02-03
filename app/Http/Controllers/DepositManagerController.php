@@ -14,7 +14,7 @@ class DepositManagerController extends Controller
      * Ambil daftar semua deposit.
      * GET /api/admin/deposit
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $validated = $request->validate([
             'per_page' => ['sometimes', 'integer', 'min:1'],
@@ -44,7 +44,7 @@ class DepositManagerController extends Controller
         $endDate = $validated['end_date'] ?? today()->toDateString();
 
         $query = Deposit::query()
-            ->with(['user:id,name,username'])
+            ->with(['user:id,name,username,profile_image'])
             ->orderBy('date', 'desc')
             ->orderBy('id', 'desc');
 
@@ -88,6 +88,7 @@ class DepositManagerController extends Controller
                     'id' => (int) $deposit->user->id,
                     'name' => $deposit->user->name,
                     'username' => $deposit->user->username,
+                    'profile_image' => $deposit->user->profile_image,
                 ],
                 'for_name' => $deposit->for_name,
                 'type' => $deposit->type,
@@ -123,7 +124,7 @@ class DepositManagerController extends Controller
      * Verifikasi atau edit verified key deposit berdasarkan ID.
      * PATCH /api/admin/deposit/verify/{id}
      */
-    public function verify(Request $request, $id)
+    public function verify(Request $request, $id): Response
     {
         $deposit = Deposit::findOrFail($id);
 
@@ -143,7 +144,7 @@ class DepositManagerController extends Controller
         ]);
 
         $deposit->refresh();
-        $deposit->load(['user:id,name,username']);
+        $deposit->load(['user:id,name,username,profile_image']);
 
         return response()->json([
             'status' => 'success',
@@ -154,6 +155,7 @@ class DepositManagerController extends Controller
                     'id' => (int) $deposit->user->id,
                     'name' => $deposit->user->name,
                     'username' => $deposit->user->username,
+                    'profile_image' => $deposit->user->profile_image,
                 ],
                 'for_name' => $deposit->for_name,
                 'type' => $deposit->type,

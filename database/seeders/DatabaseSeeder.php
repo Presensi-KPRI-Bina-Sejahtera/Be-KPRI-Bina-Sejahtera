@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             PresenceLocationSeeder::class,
             UserSeeder::class,
             DepositSeeder::class,
+            CashflowSeeder::class,
         ]);
     }
 }
