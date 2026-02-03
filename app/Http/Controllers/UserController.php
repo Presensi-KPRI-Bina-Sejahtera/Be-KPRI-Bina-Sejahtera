@@ -171,7 +171,7 @@ class UserController extends Controller
             'data' => [
                 'id' => (int) $user->id,
                 'presence_location_id' => (int) $user->presence_location_id,
-                'presence_location_name' => $user->presenceLocation?->name,
+                'presence_location_name' => $user->presenceLocation->name,
                 'username' => $user->username,
                 'name' => $user->name,
                 'email' => $user->email,

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PresenceLocationController;
+use App\Http\Controllers\DepositManagerController;
 
 /**
  * Status check route.
@@ -67,5 +68,15 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
         Route::delete('/{id}', [PresenceLocationController::class, 'destroy']);
         Route::get('/dropdown', [PresenceLocationController::class, 'dropdown']);
         Route::get('/address', [PresenceLocationController::class, 'getAddressFromCoordinatesApi']);
+    });
+
+    /**
+     * Deposit management routes.
+     * Get /api/admin/deposit -> list all deposits
+     * Patch /api/admin/deposit/verify/{id} -> verify deposit by id
+     */
+    Route::prefix('deposit')->group(function () {
+        Route::get('/', [DepositManagerController::class, 'index']);
+        Route::patch('verify/{id}', [DepositManagerController::class, 'verify']);
     });
 });

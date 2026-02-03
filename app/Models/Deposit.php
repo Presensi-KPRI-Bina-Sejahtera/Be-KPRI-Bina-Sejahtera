@@ -13,6 +13,7 @@ class Deposit extends Model
     protected $fillable = [
         'user_id',
         'for_name',
+        'type',
         'date',
         'value',
         'verified_key',

@@ -16,76 +16,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $location = PresenceLocation::create([
-            'name' => 'Toko Utama',
-            'address' => 'Alamat belum diisi',
-            'latitude' => '-7.762250',
-            'longitude' => '110.337500',
-            'max_distance' => 50,
-        ]);
-
-        User::create([
-            'presence_location_id' => $location->id,
-            'username' => 'testuser',
-            'name' => 'Test User',
-            'role' => 'admin',
-            'email' => 'test@example.com',
-        ]);
-
-        User::create([
-            'presence_location_id' => $location->id,
-            'username' => 'employee1',
-            'name' => 'Employee One',
-            'role' => 'employee',
-            'email' => 'test2@example.com',
-        ]);
-
-        User::create([
-            'presence_location_id' => $location->id,
-            'username' => 'fauzan1',
-            'name' => 'Fauzan Trisuladana',
-            'role' => 'admin',
-            'email' => 'fauzantrisuladana@gmail.com',
-        ]);
-
-        User::create([
-            'presence_location_id' => $location->id,
-            'username' => 'fauzan2',
-            'name' => 'Muhammad Fauzan Putra Trisuladana',
-            'role' => 'admin',
-            'email' => 'muhammadfauzanputratrisuladana@mail.ugm.ac.id',
-        ]);
-
-        User::create([
-            'presence_location_id' => $location->id,
-            'username' => 'afif1',
-            'name' => 'Abdullah Afif',
-            'role' => 'admin',
-            'email' => 'abdullahafifh@gmail.com',
-        ]);
-
-        User::create([
-            'presence_location_id' => $location->id,
-            'username' => 'afif2',
-            'name' => 'Afef Space',
-            'role' => 'admin',
-            'email' => 'afefspace@gmail.com',
-        ]);
-
-        User::create([
-            'presence_location_id' => $location->id,
-            'username' => 'afif3',
-            'name' => 'Catetan Saja',
-            'role' => 'employee',
-            'email' => 'catetansaja@gmail.com',
-        ]);
-
-        User::create([
-            'presence_location_id' => $location->id,
-            'username' => 'rio1',
-            'name' => 'Prihastomo Budisatrio',
-            'role' => 'admin',
-            'email' => 'prihastomobudisatrio2005@mail.ugm.ac.id',
+        $this->call([
+            PresenceLocationSeeder::class,
+            UserSeeder::class,
+            DepositSeeder::class,
         ]);
     }
 }
