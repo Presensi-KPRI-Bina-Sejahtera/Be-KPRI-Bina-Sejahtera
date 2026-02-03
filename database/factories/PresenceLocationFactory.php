@@ -15,9 +15,9 @@ class PresenceLocationFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->company(),
-            'latitude' => (string) fake()->latitude(),
-            'longitude' => (string) fake()->longitude(),
+            'name' => $this->faker->company(),
+            'latitude' => (string) $this->faker->latitude(),
+            'longitude' => (string) $this->faker->longitude(),
             'max_distance' => 50,
         ];
     }
