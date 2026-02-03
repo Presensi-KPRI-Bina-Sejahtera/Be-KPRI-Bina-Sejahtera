@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\User;
 use Illuminate\Validation\Rule;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -13,7 +14,7 @@ class UserController extends Controller
      * Ambil daftar semua user.
      * GET /admin/user
      */
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $validated = $request->validate([
             'per_page' => ['sometimes', 'integer', 'min:1'],
@@ -59,10 +60,10 @@ class UserController extends Controller
             'status' => 'success',
             'message' => 'Daftar user berhasil diambil',
             'data' => [
-                'current_page' => $users->currentPage(),
-                'last_page' => $users->lastPage(),
-                'per_page' => $users->perPage(),
-                'total' => $users->total(),
+                'current_page' => (int) $users->currentPage(),
+                'last_page' => (int) $users->lastPage(),
+                'per_page' => (int) $users->perPage(),
+                'total' => (int) $users->total(),
                 'users' => $userData,
             ],
         ]);
@@ -72,7 +73,7 @@ class UserController extends Controller
      * Ambil daftar user untuk dropdown.
      * GET /admin/user/dropdown
      */
-    public function dropdown(Request $request)
+    public function dropdown(Request $request): Response
     {
         $role = $request->input('role');
         $query = User::query();
@@ -93,7 +94,7 @@ class UserController extends Controller
      * Tambah user baru.
      * POST /admin/user
      */
-    public function store(Request $request)
+    public function store(Request $request): Response
     {
         $validated = $request->validate([
             'presence_location_id' => ['required', 'integer', 'exists:presence_locations,id'],
@@ -143,12 +144,12 @@ class UserController extends Controller
      * Update data user.
      * PUT /admin/user/{id}
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): Response
     {
         $user = User::findOrFail($id);
         $validated = $request->validate([
             'presence_location_id' => ['sometimes', 'integer', 'exists:presence_locations,id'],
-            'username' => ['nullable', 'string', Rule::unique('users', 'username')->ignore($user->id)],
+            'username' => ['sometimes', 'nullable', 'string', Rule::unique('users', 'username')->ignore($user->id)],
             'name' => ['sometimes', 'string'],
             'email' => ['sometimes', 'email', Rule::unique('users', 'email')->ignore($user->id)],
             'role' => ['sometimes', Rule::in(['employee', 'admin'])],
@@ -163,14 +164,14 @@ class UserController extends Controller
             'role.in' => 'Role harus salah satu dari: employee, admin',
         ]);
         $user->update($validated);
-        // $user->refresh()->load('presenceLocation');
+        $user->refresh()->load('presenceLocation');
         return response()->json([
             'status' => 'success',
             'message' => 'User berhasil diupdate',
             'data' => [
                 'id' => (int) $user->id,
                 'presence_location_id' => (int) $user->presence_location_id,
-                // 'presence_location_name' => $user->presenceLocation?->name,
+                'presence_location_name' => $user->presenceLocation?->name,
                 'username' => $user->username,
                 'name' => $user->name,
                 'email' => $user->email,
@@ -184,7 +185,7 @@ class UserController extends Controller
      * Hapus user (soft delete).
      * DELETE /admin/user/{id}
      */
-    public function destroy($id)
+    public function destroy($id): Response
     {
         $user = User::findOrFail($id);
         $user->delete();

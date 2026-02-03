@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PresenceLocationController;
 
 /**
  * Status check route.
@@ -48,5 +49,21 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
         Route::put('/{id}', [UserController::class, 'update']);
         Route::delete('/{id}', [UserController::class, 'destroy']);
         Route::get('/dropdown', [UserController::class, 'dropdown']);
+    });
+
+    /**
+     * Presence Location management routes.
+     * Get /api/admin/presence-location -> list all presence locations
+     * Post /api/admin/presence-location -> create new presence location
+     * Put /api/admin/presence-location/{id} -> update presence location by id
+     * Delete /api/admin/presence-location/{id} -> delete presence location by id
+     * Get /api/admin/presence-location/dropdown -> get presence locations for dropdown
+     */
+    Route::prefix('presence-location')->group(function () {
+        Route::get('/', [PresenceLocationController::class, 'index']);
+        Route::post('/', [PresenceLocationController::class, 'store']);
+        Route::put('/{id}', [PresenceLocationController::class, 'update']);
+        Route::delete('/{id}', [PresenceLocationController::class, 'destroy']);
+        Route::get('/dropdown', [PresenceLocationController::class, 'dropdown']);
     });
 });
