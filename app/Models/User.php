@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
@@ -73,5 +74,28 @@ class User extends Authenticatable
     public function deposits(): HasMany
     {
         return $this->hasMany(Deposit::class);
+    }
+
+    public function getPhotoProfile(): ?string
+    {
+        $value = $this->profile_image;
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        $value = (string) $value;
+
+        if (Str::startsWith($value, ['http://', 'https://'])) {
+            return $value;
+        }
+
+        if (Str::startsWith($value, ['storage/', '/storage/'])) {
+            $baseUrl = rtrim((string) config('app.url', ''), '/');
+            $path = '/' . ltrim($value, '/');
+
+            return $baseUrl !== '' ? ($baseUrl . $path) : $path;
+        }
+
+        return $value;
     }
 }

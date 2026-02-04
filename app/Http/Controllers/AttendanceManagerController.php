@@ -110,7 +110,7 @@ class AttendanceManagerController extends Controller
                     'id' => (int) $attendance->user->id,
                     'name' => $attendance->user->name,
                     'username' => $attendance->user->username,
-                    'profile_image' => $attendance->user->profile_image,
+                    'profile_image' => $attendance->user->getPhotoProfile(),
                 ],
                 'date' => $attendance->date->format('Y-m-d'),
                 'jam_masuk' => $jamMasuk,

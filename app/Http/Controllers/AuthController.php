@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -115,8 +116,41 @@ class AuthController extends Controller
             abort(404, 'Pengguna dengan email tersebut tidak ditemukan');
         }
 
+        $existingPhoto = (string) ($user->profile_image ?? '');
+        $googlePhoto = $payload['picture'] ?? null;
+
+        // Internal = file upload aplikasi (path /storage/... atau URL yang path-nya /storage/...)
+        // External = URL http/https selain /storage/... (contoh: googleusercontent)
+        $pathOnly = $existingPhoto;
+        $isHttpUrl = Str::startsWith($pathOnly, ['http://', 'https://']);
+        if ($isHttpUrl) {
+            $parsed = parse_url($pathOnly);
+            $pathOnly = (string) ($parsed['path'] ?? $pathOnly);
+        }
+
+        $isInternal = $existingPhoto !== '' && (
+            Str::startsWith($existingPhoto, ['/storage/', 'storage/']) ||
+            Str::startsWith($pathOnly, ['/storage/', 'storage/'])
+        );
+
+        $isExternal = $existingPhoto !== '' && $isHttpUrl && !$isInternal;
+
+        // Aturan:
+        // - Kalo kosong, pakai Google picture
+        // - Kalau internal yang di laravel, upload sendiri, jangan override
+        // - Kalau external, override pakai Google picture, kalau ada
+        if ($existingPhoto === '') {
+            $photo = $googlePhoto;
+        } elseif ($isInternal) {
+            $photo = $existingPhoto;
+        } elseif ($isExternal) {
+            $photo = $googlePhoto ?? $existingPhoto;
+        } else {
+            $photo = $existingPhoto;
+        }
+
         $user->forceFill([
-            'profile_image' => $user->profile_image ?: ($payload['picture'] ?? null),
+            'profile_image' => $photo,
             'provider' => 'google',
             'id_provider' => $payload['sub'],
         ])->save();
@@ -144,29 +178,6 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'role' => $user->role,
             ],
-        ]);
-    }
-
-    /**
-     * Ambil data user yang sedang login.
-     * Get /api/auth/me
-     */
-    public function me(Request $request): Response
-    {
-        $user = $request->user();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Berhasil mengambil data user',
-            'data' => [
-                'id' => (int) $user->id,
-                'name' => $user->name,
-                'username' => $user->username,
-                'email' => $user->email,
-                'role' => $user->role,
-                'profile_image' => $user->profile_image,
-                'has_password' => !is_null($user->password),
-            ]
         ]);
     }
 

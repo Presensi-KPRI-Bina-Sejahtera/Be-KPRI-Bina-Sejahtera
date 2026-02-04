@@ -82,7 +82,7 @@ class CashflowManagerController extends Controller
                     'id' => (int) $cashflow->user->id,
                     'name' => $cashflow->user->name,
                     'username' => $cashflow->user->username,
-                    'profile_image' => $cashflow->user->profile_image,
+                    'profile_image' => $cashflow->user->getPhotoProfile(),
                 ],
                 'type' => $cashflow->type,
                 'date' => $cashflow->date->format('Y-m-d'),

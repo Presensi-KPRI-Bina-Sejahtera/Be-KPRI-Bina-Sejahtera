@@ -37,7 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
             $remainingCount = max(0, $allMessages->count() - 1);
 
             if ($firstMessage === '') {
-                $message = 'Validasi gagal.';
+                $message = 'Validasi gagal';
             } elseif ($remainingCount > 0) {
                 $message = $firstMessage.', dan '.$remainingCount.' kesalahan lainnya';
             } else {

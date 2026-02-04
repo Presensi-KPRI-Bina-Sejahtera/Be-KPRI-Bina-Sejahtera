@@ -53,7 +53,7 @@ class UserManagerController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->role,
-                'profile_image' => $user->profile_image,
+                'profile_image' => $user->getPhotoProfile(),
             ];
         });
         return response()->json([
@@ -135,7 +135,7 @@ class UserManagerController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->role,
-                'profile_image' => $user->profile_image,
+                'profile_image' => $user->getPhotoProfile(),
             ],
         ], 201);
     }
@@ -176,7 +176,7 @@ class UserManagerController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->role,
-                'profile_image' => $user->profile_image,
+                'profile_image' => $user->getPhotoProfile(),
             ],
         ]);
     }

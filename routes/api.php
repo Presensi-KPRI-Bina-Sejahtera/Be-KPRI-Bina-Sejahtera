@@ -8,6 +8,7 @@ use App\Http\Controllers\PresenceLocationController;
 use App\Http\Controllers\DepositManagerController;
 use App\Http\Controllers\CashflowManagerController;
 use App\Http\Controllers\AttendanceManagerController;
+use App\Http\Controllers\ProfileController;
 
 /**
  * Status check route.
@@ -20,7 +21,6 @@ Route::get('/status', function () {
 /**
  * Authentication routes.
  * Post /api/auth/login -> login manual pake password
- * Get /api/auth/me -> get current user dan status login
  * Post /api/auth/logout -> logout user
  */
 Route::prefix('auth')->group(function () {
@@ -28,9 +28,22 @@ Route::prefix('auth')->group(function () {
     Route::post('/login-google', [AuthController::class, 'loginGoogle']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/me', [AuthController::class, 'me']);
         Route::post('/logout', [AuthController::class, 'logout']);
     });
+});
+
+/**
+ * Profile routes for authenticated users.
+ * Get /api/profile/me -> get current user profile
+ * Put /api/profile/update -> update current user profile
+ * Put /api/profile/update-password -> update current user password
+ * Put /api/profile/photo -> update current user photo
+ */
+Route::middleware('auth:sanctum')->prefix('profile')->group(function () {
+    Route::get('/me', [ProfileController::class, 'me']);
+    Route::put('/update', [ProfileController::class, 'update']);
+    Route::put('/update-password', [ProfileController::class, 'updatePassword']);
+    Route::put('/photo', [ProfileController::class, 'updatePhoto']);
 });
 
 /**
@@ -90,6 +103,10 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
         Route::get('/', [CashflowManagerController::class, 'index']);
     });
 
+    /**
+     * Attendance management routes.
+     * Get /api/admin/attendance -> list all attendances
+     */
     Route::prefix('attendance')->group(function () {
         Route::get('/', [AttendanceManagerController::class, 'index']);
     });
