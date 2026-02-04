@@ -165,6 +165,7 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'role' => $user->role,
                 'profile_image' => $user->profile_image,
+                'has_password' => !is_null($user->password),
             ]
         ]);
     }

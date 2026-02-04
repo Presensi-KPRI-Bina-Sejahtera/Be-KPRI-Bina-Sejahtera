@@ -78,7 +78,6 @@ class CashflowManagerController extends Controller
 
         $cashflowData = collect($cashflows->items())->map(function (Cashflow $cashflow) {
             return [
-                'id' => (int) $cashflow->id,
                 'user' => [
                     'id' => (int) $cashflow->user->id,
                     'name' => $cashflow->user->name,
