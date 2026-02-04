@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             DepositSeeder::class,
             CashflowSeeder::class,
+            AttendanceSeeder::class,
         ]);
     }
 }

@@ -35,12 +35,10 @@ class CashflowManagerController extends Controller
         $startDate = $validated['start_date'] ?? now()->startOfMonth()->toDateString();
         $endDate = $validated['end_date'] ?? today()->toDateString();
 
-        $query = Cashflow::query()
-            ->with(['user:id,name,username,profile_image'])
-            ->orderBy('date', 'desc')
-            ->orderBy('id', 'desc');
+        // Base query untuk filter (dipakai paginate + summary)
+        $baseQuery = Cashflow::query();
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $baseQuery->where(function ($q) use ($search) {
                 $q->orWhereHas('user', function ($uq) use ($search) {
                     $uq->where('name', 'like', "%{$search}%")
                         ->orWhere('username', 'like', "%{$search}%");
@@ -49,16 +47,32 @@ class CashflowManagerController extends Controller
         }
 
         if (!empty($types)) {
-            $query->where('type', $types);
+            $baseQuery->where('type', $types);
         }
 
         if ($startDate) {
-            $query->whereDate('date', '>=', $startDate);
+            $baseQuery->whereDate('date', '>=', $startDate);
         }
 
         if ($endDate) {
-            $query->whereDate('date', '<=', $endDate);
+            $baseQuery->whereDate('date', '<=', $endDate);
         }
+
+        $summaryRow = (clone $baseQuery)
+            ->reorder()
+            ->selectRaw('SUM(CASE WHEN type = "pemasukan" THEN value ELSE 0 END) as sum_pemasukan')
+            ->selectRaw('SUM(CASE WHEN type = "pengeluaran" THEN value ELSE 0 END) as sum_pengeluaran')
+            ->first();
+
+        $summary = [
+            'pemasukan' => (int) ($summaryRow->sum_pemasukan ?? 0),
+            'pengeluaran' => (int) ($summaryRow->sum_pengeluaran ?? 0),
+        ];
+
+        $query = (clone $baseQuery)
+            ->with(['user:id,name,username,profile_image'])
+            ->orderBy('date', 'desc')
+            ->orderBy('id', 'desc');
 
         $cashflows = $query->paginate($perPage);
 
@@ -76,11 +90,6 @@ class CashflowManagerController extends Controller
                 'value' => (int) $cashflow->value,
             ];
         });
-
-        $summary = [
-            'pemasukan' => (int) $cashflowData->where('type', 'pemasukan')->sum('value'),
-            'pengeluaran' => (int) $cashflowData->where('type', 'pengeluaran')->sum('value'),
-        ];
 
         return response()->json([
             'status' => 'success',

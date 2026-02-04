@@ -20,6 +20,8 @@ class Attendance extends Model
 
     protected $casts = [
         'date' => 'date',
+        'time' => 'datetime:H:i:s',
+        'distance' => 'float',
     ];
 
     public function user(): BelongsTo

@@ -7,6 +7,7 @@ use App\Http\Controllers\UserManagerController;
 use App\Http\Controllers\PresenceLocationController;
 use App\Http\Controllers\DepositManagerController;
 use App\Http\Controllers\CashflowManagerController;
+use App\Http\Controllers\AttendanceManagerController;
 
 /**
  * Status check route.
@@ -87,5 +88,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
      */
     Route::prefix('cashflow')->group(function () {
         Route::get('/', [CashflowManagerController::class, 'index']);
+    });
+
+    Route::prefix('attendance')->group(function () {
+        Route::get('/', [AttendanceManagerController::class, 'index']);
     });
 });

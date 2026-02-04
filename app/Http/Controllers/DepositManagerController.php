@@ -43,13 +43,11 @@ class DepositManagerController extends Controller
         $startDate = $validated['start_date'] ?? now()->startOfMonth()->toDateString();
         $endDate = $validated['end_date'] ?? today()->toDateString();
 
-        $query = Deposit::query()
-            ->with(['user:id,name,username,profile_image'])
-            ->orderBy('date', 'desc')
-            ->orderBy('id', 'desc');
+        // Base query untuk filter (dipakai paginate + summary)
+        $baseQuery = Deposit::query();
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $baseQuery->where(function ($q) use ($search) {
                 $q->where('for_name', 'like', "%{$search}%")
                     ->orWhereHas('user', function ($uq) use ($search) {
                         $uq->where('name', 'like', "%{$search}%")
@@ -59,24 +57,40 @@ class DepositManagerController extends Controller
         }
 
         if (!empty($types)) {
-            $query->where('type', $types);
+            $baseQuery->where('type', $types);
         }
 
         if (!empty($statuses)) {
             if ($statuses === 'pending') {
-                $query->whereNull('verified_key');
+                $baseQuery->whereNull('verified_key');
             } elseif ($statuses === 'verified') {
-                $query->whereNotNull('verified_key');
+                $baseQuery->whereNotNull('verified_key');
             }
         }
 
         if ($startDate) {
-            $query->whereDate('date', '>=', $startDate);
+            $baseQuery->whereDate('date', '>=', $startDate);
         }
 
         if ($endDate) {
-            $query->whereDate('date', '<=', $endDate);
+            $baseQuery->whereDate('date', '<=', $endDate);
         }
+
+        $summaryRow = (clone $baseQuery)
+            ->reorder()
+            ->selectRaw('SUM(CASE WHEN type = "simpanan" THEN value ELSE 0 END) as sum_simpanan')
+            ->selectRaw('SUM(CASE WHEN type = "angsuran" THEN value ELSE 0 END) as sum_angsuran')
+            ->first();
+
+        $summary = [
+            'simpanan' => (int) ($summaryRow->sum_simpanan ?? 0),
+            'angsuran' => (int) ($summaryRow->sum_angsuran ?? 0),
+        ];
+
+        $query = (clone $baseQuery)
+            ->with(['user:id,name,username,profile_image'])
+            ->orderBy('date', 'desc')
+            ->orderBy('id', 'desc');
 
         $deposits = $query->paginate($perPage);
 
@@ -97,11 +111,6 @@ class DepositManagerController extends Controller
                 'verified_key' => $deposit->verified_key,
             ];
         });
-
-        $summary = [
-            'simpanan' => (int) $depositData->where('type', 'simpanan')->sum('value'),
-            'angsuran' => (int) $depositData->where('type', 'angsuran')->sum('value'),
-        ];
 
         return response()->json([
             'status' => 'success',
