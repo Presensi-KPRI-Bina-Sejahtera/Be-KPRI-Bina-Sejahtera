@@ -98,7 +98,6 @@ class DepositManagerController extends Controller
             ];
         });
 
-        // summary: sum value per type (hanya data di halaman ini)
         $summary = [
             'simpanan' => (int) $depositData->where('type', 'simpanan')->sum('value'),
             'angsuran' => (int) $depositData->where('type', 'angsuran')->sum('value'),

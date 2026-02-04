@@ -16,14 +16,14 @@ class CashflowManagerController extends Controller
             'search' => ['sometimes', 'string'],
             'start_date' => ['sometimes', 'date'],
             'end_date' => ['sometimes', 'date', 'after_or_equal:start_date'],
-            'type' => ['sometimes', 'string', 'in:angsuran,simpanan'],
+            'type' => ['sometimes', 'string', 'in:pemasukan,pengeluaran'],
         ], [
             'per_page.integer' => 'per_page harus berupa angka',
             'per_page.min' => 'per_page minimal 1',
             'search.string' => 'Search harus berupa teks',
             'start_date.date' => 'Tanggal mulai harus berupa tanggal yang valid',
             'end_date.date' => 'Tanggal selesai harus berupa tanggal yang valid',
-            'type.in' => 'Type harus salah satu dari: angsuran, simpanan',
+            'type.in' => 'Type harus salah satu dari: pemasukan, pengeluaran',
             'end_date.after_or_equal' => 'Tanggal selesai harus lebih besar atau sama dengan tanggal mulai',
         ]);
 
@@ -77,7 +77,6 @@ class CashflowManagerController extends Controller
             ];
         });
 
-        // summary: sum value per type (hanya data di halaman ini)
         $summary = [
             'pemasukan' => (int) $cashflowData->where('type', 'pemasukan')->sum('value'),
             'pengeluaran' => (int) $cashflowData->where('type', 'pengeluaran')->sum('value'),
