@@ -125,7 +125,7 @@ class DepositController extends Controller
                 'summary' => $summary,
                 'deposits' => $depositData,
             ],
-        ]);
+        ], 200);
     }
 
     /**
@@ -171,6 +171,6 @@ class DepositController extends Controller
                 'value' => (int) $deposit->value,
                 'verified_key' => $deposit->verified_key,
             ],
-        ]);
+        ], 200);
     }
 }

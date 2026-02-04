@@ -103,6 +103,6 @@ class CashflowController extends Controller
                 'summary' => $summary,
                 'cashflows' => $cashflowData,
             ],
-        ]);
+        ], 200);
     }
 }

@@ -132,6 +132,6 @@ class AttendanceController extends Controller
                 'summary' => $summary,
                 'attendances' => $attendanceData,
             ],
-        ]);
+        ], 200);
     }
 }

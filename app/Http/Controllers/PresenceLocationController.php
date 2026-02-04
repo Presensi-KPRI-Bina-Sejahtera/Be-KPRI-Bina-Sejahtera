@@ -4,27 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PresenceLocation;
+use App\Services\NominatimReverseGeocodingService;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Http;
 
 class PresenceLocationController extends Controller
 {
-    /**
-     * Dapatkan alamat dari koordinat latitude dan longitude menggunakan Nominatim OpenStreetMap.
-     */
-    public function getAddressFromCoordinates($latitude, $longitude)
-    {
-        $userAgent = env('NOMINATIM_USER_AGENT', 'Presensi KRPIBS/1.0 (presensi@trisuladana.com)');
-        $response = Http::withHeaders([
-            'User-Agent' => $userAgent,
-        ])->get('https://nominatim.openstreetmap.org/reverse', [
-            'lat' => (float) $latitude,
-            'lon' => (float) $longitude,
-            'format' => 'json',
-        ]);
-        return $response['display_name'] ?? null;
-    }
+    public function __construct(
+        private readonly NominatimReverseGeocodingService $reverseGeocodingService
+    ) {}
 
     /**
      * Dapat alamat dari koordinat latitude dan longitude.
@@ -42,7 +30,10 @@ class PresenceLocationController extends Controller
             'longitude.numeric' => 'Longitude harus berupa angka',
         ]);
 
-        $address = $this->getAddressFromCoordinates($validated['latitude'], $validated['longitude']);
+        $address = $this->reverseGeocodingService->getAddressFromCoordinates(
+            $validated['latitude'],
+            $validated['longitude']
+        );
 
         return response()->json([
             'status' => $address ? 'success' : 'error',
@@ -50,7 +41,7 @@ class PresenceLocationController extends Controller
             'data' => [
                 'address' => $address,
             ],
-        ]);
+        ], $address ? 200 : 404);
     }
 
     /**
@@ -99,7 +90,7 @@ class PresenceLocationController extends Controller
                 'total' => (int) $locations->total(),
                 'presence_locations' => $locationData,
             ],
-        ]);
+        ], 200);
     }
 
     /**
@@ -114,7 +105,7 @@ class PresenceLocationController extends Controller
             'status' => 'success',
             'message' => 'Daftar lokasi presensi untuk dropdown berhasil diambil',
             'data' => $locations,
-        ]);
+        ], 200);
     }
 
     /**
@@ -151,7 +142,10 @@ class PresenceLocationController extends Controller
         }
 
         if (!isset($validated['address'])) {
-            $validated['address'] = $this->getAddressFromCoordinates($validated['latitude'], $validated['longitude']);
+            $validated['address'] = $this->reverseGeocodingService->getAddressFromCoordinates(
+                $validated['latitude'],
+                $validated['longitude']
+            );
         }
 
         $location = PresenceLocation::create($validated);
@@ -203,7 +197,7 @@ class PresenceLocationController extends Controller
         if ((isset($validated['latitude']) || isset($validated['longitude'])) && !isset($validated['address'])) {
             $lat = $validated['latitude'] ?? $location->latitude;
             $lon = $validated['longitude'] ?? $location->longitude;
-            $validated['address'] = $this->getAddressFromCoordinates($lat, $lon);
+            $validated['address'] = $this->reverseGeocodingService->getAddressFromCoordinates($lat, $lon);
         }
 
         $location->update($validated);
@@ -221,7 +215,7 @@ class PresenceLocationController extends Controller
                 'max_distance' => (int) $location->max_distance,
                 'maps' => "https://www.google.com/maps/search/?api=1&query={$location->latitude},{$location->longitude}",
             ],
-        ]);
+        ], 200);
     }
 
     /**
@@ -236,6 +230,6 @@ class PresenceLocationController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Lokasi presensi berhasil dihapus',
-        ]);
+        ], 200);
     }
 }

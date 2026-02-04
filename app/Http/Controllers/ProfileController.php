@@ -31,7 +31,7 @@ class ProfileController extends Controller
                 'profile_image' => $user->getPhotoProfile(),
                 'has_password' => (bool) !is_null($user->password),
             ]
-        ]);
+        ], 200);
     }
 
     /**
@@ -68,7 +68,7 @@ class ProfileController extends Controller
                 'profile_image' => $user->getPhotoProfile(),
                 'has_password' => (bool) !is_null($user->password),
             ],
-        ]);
+        ], 200);
     }
 
     /**
@@ -119,7 +119,7 @@ class ProfileController extends Controller
                 'profile_image' => $user->getPhotoProfile(),
                 'has_password' => (bool) !is_null($user->password),
             ],
-        ]);
+        ], 200);
     }
 
     /**
@@ -195,6 +195,6 @@ class ProfileController extends Controller
                 'profile_image' => $user->getPhotoProfile(),
                 'has_password' => (bool) !is_null($user->password),
             ],
-        ]);
+        ], 200);
     }
 }

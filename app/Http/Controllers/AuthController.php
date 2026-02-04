@@ -70,7 +70,7 @@ class AuthController extends Controller
                     'profile_image' => $user->getPhotoProfile(),
                 ],
             ],
-        ]);
+        ], 200);
     }
 
     /**
@@ -180,7 +180,7 @@ class AuthController extends Controller
                 'role' => $user->role,
                 'profile_image' => $user->getPhotoProfile(),
             ],
-        ]);
+        ], 200);
     }
 
     /**
@@ -201,6 +201,6 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Berhasil logout',
-        ]);
+        ], 200);
     }
 }

@@ -66,7 +66,7 @@ class UserManagerController extends Controller
                 'total' => (int) $users->total(),
                 'users' => $userData,
             ],
-        ]);
+        ], 200);
     }
 
     /**
@@ -87,7 +87,7 @@ class UserManagerController extends Controller
             'status' => 'success',
             'message' => 'Daftar user untuk dropdown berhasil diambil',
             'data' => $users,
-        ]);
+        ], 200);
     }
 
     /**
@@ -195,7 +195,7 @@ class UserManagerController extends Controller
                 'role' => $user->role,
                 'profile_image' => $user->getPhotoProfile(),
             ],
-        ]);
+        ], 200);
     }
 
     /**
@@ -209,6 +209,6 @@ class UserManagerController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'User berhasil dihapus',
-        ]);
+        ], 200);
     }
 }
