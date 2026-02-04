@@ -181,7 +181,9 @@ class AttendanceController extends Controller
             'message' => 'Data presensi untuk hari ini berhasil diambil',
             'data' => [
                 'jam_masuk' => $jamMasuk,
+                'sudah_masuk' => !is_null($jamMasuk),
                 'jam_pulang' => $jamPulang,
+                'sudah_pulang' => !is_null($jamPulang),
                 'total_work_hours' => $totalHours,
                 'total_work_minutes' => $totalMinutes,
                 'work_duration_text' => $totalSeconds !== null ? sprintf('%02d Jam %02d Menit', $totalHours, $totalMinutes) : null,

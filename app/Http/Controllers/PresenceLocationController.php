@@ -232,4 +232,30 @@ class PresenceLocationController extends Controller
             'message' => 'Lokasi presensi berhasil dihapus',
         ], 200);
     }
+
+    public function myPresenceLocation(Request $request): Response
+    {
+        $user = $request->user();
+        $location = $user->presenceLocation;
+
+        if (!$location) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User tidak memiliki lokasi presensi',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Lokasi presensi user berhasil diambil',
+            'data' => [
+                'name' => $location->name,
+                'address' => $location->address,
+                'latitude' => $location->latitude,
+                'longitude' => $location->longitude,
+                'max_distance' => (int) $location->max_distance,
+                'maps' => "https://www.google.com/maps/search/?api=1&query={$location->latitude},{$location->longitude}",
+            ],
+        ], 200);
+    }
 }

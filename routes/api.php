@@ -152,6 +152,6 @@ Route::middleware(['auth:sanctum', 'role:employee'])->prefix('employee')->group(
      * Get /api/employee/presence-location -> get my presence location
      */
     Route::prefix('presence-location')->group(function () {
-        Route::get('/', [PresenceLocationController::class, 'my']);
+        Route::get('/', [PresenceLocationController::class, 'myPresenceLocation']);
     });
 });
