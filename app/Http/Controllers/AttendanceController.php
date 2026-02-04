@@ -103,7 +103,8 @@ class AttendanceController extends Controller
                 $totalSeconds = $diff >= 0 ? $diff : null;
             }
 
-            $totalHours = $totalSeconds !== null ? round($totalSeconds / 3600, 2) : null;
+            $totalHours = $totalSeconds !== null ? floor($totalSeconds / 3600) : null;
+            $totalMinutes = $totalSeconds !== null ? floor(($totalSeconds % 3600) / 60) : null;
 
             return [
                 'user' => [
@@ -116,6 +117,8 @@ class AttendanceController extends Controller
                 'jam_masuk' => $jamMasuk,
                 'jam_pulang' => $jamPulang,
                 'total_work_hours' => $totalHours,
+                'total_work_minutes' => $totalMinutes,
+                'work_duration_text' => $totalSeconds !== null ? sprintf('%02d Jam %02d Menit', $totalHours, $totalMinutes) : null,
             ];
         });
 
@@ -131,6 +134,57 @@ class AttendanceController extends Controller
                 'end_date' => $endDate,
                 'summary' => $summary,
                 'attendances' => $attendanceData,
+            ],
+        ], 200);
+    }
+
+    public function today(Request $request): Response
+    {
+        $user = $request->user();
+        $today = today()->toDateString();
+
+        $attendance = Attendance::query()
+            ->select([
+                'user_id',
+                'date',
+                DB::raw('MIN(CASE WHEN type = "datang" THEN time END) as jam_masuk'),
+                DB::raw('MAX(CASE WHEN type = "pulang" THEN time END) as jam_pulang'),
+            ])
+            ->where('user_id', $user->id)
+            ->whereDate('date', $today)
+            ->groupBy('user_id', 'date')
+            ->first();
+
+        if (!$attendance) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Tidak ada data presensi untuk hari ini',
+                'data' => null,
+            ], 200);
+        }
+
+        $jamMasuk = $attendance->jam_masuk;
+        $jamPulang = $attendance->jam_pulang;
+
+        $totalSeconds = null;
+        if (!empty($jamMasuk) && !empty($jamPulang)) {
+            $diff = strtotime($jamPulang) - strtotime($jamMasuk);
+            $totalSeconds = $diff >= 0 ? $diff : null;
+        }
+
+
+        $totalHours = $totalSeconds !== null ? floor($totalSeconds / 3600) : null;
+        $totalMinutes = $totalSeconds !== null ? floor(($totalSeconds % 3600) / 60) : null;
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data presensi untuk hari ini berhasil diambil',
+            'data' => [
+                'jam_masuk' => $jamMasuk,
+                'jam_pulang' => $jamPulang,
+                'total_work_hours' => $totalHours,
+                'total_work_minutes' => $totalMinutes,
+                'work_duration_text' => $totalSeconds !== null ? sprintf('%02d Jam %02d Menit', $totalHours, $totalMinutes) : null,
             ],
         ], 200);
     }

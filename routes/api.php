@@ -118,5 +118,40 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
  * Employee api routes.
  */
 Route::middleware(['auth:sanctum', 'role:employee'])->prefix('employee')->group(function () {
-    // --- IGNORE ---
+
+    /**
+     * Attendance routes.
+     * Get /api/employee/attendance -> get today's attendance
+     * Post /api/employee/attendance/check-in -> check in attendance
+     * Post /api/employee/attendance/check-out -> check out attendance
+     */
+    Route::prefix('attendance')->group(function () {
+        Route::get('/', [AttendanceController::class, 'today']);
+        Route::post('/check-in', [AttendanceController::class, 'checkIn']);
+        Route::post('/check-out', [AttendanceController::class, 'checkOut']);
+    });
+
+    /**
+     * Deposit routes.
+     * Post /api/employee/deposit -> create new deposit
+     */
+    Route::prefix('deposit')->group(function () {
+        Route::post('/', [DepositController::class, 'store']);
+    });
+
+    /**
+     * Cashflow routes.
+     * Post /api/employee/cashflow -> create new cashflow
+     */
+    Route::prefix('cashflow')->group(function () {
+        Route::post('/', [CashflowController::class, 'store']);
+    });
+
+    /**
+     * Presence Location routes.
+     * Get /api/employee/presence-location -> get my presence location
+     */
+    Route::prefix('presence-location')->group(function () {
+        Route::get('/', [PresenceLocationController::class, 'my']);
+    });
 });
