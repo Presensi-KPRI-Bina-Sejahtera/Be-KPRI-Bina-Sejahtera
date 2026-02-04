@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserManagerController;
 use App\Http\Controllers\PresenceLocationController;
 use App\Http\Controllers\DepositManagerController;
 use App\Http\Controllers\CashflowManagerController;
@@ -46,11 +46,11 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
      * Get /api/admin/user/dropdown -> get users for dropdown
      */
     Route::prefix('user')->group(function () {
-        Route::get('/', [UserController::class, 'index']);
-        Route::post('/', [UserController::class, 'store']);
-        Route::put('/{id}', [UserController::class, 'update']);
-        Route::delete('/{id}', [UserController::class, 'destroy']);
-        Route::get('/dropdown', [UserController::class, 'dropdown']);
+        Route::get('/', [UserManagerController::class, 'index']);
+        Route::post('/', [UserManagerController::class, 'store']);
+        Route::put('/{id}', [UserManagerController::class, 'update']);
+        Route::delete('/{id}', [UserManagerController::class, 'destroy']);
+        Route::get('/dropdown', [UserManagerController::class, 'dropdown']);
     });
 
     /**
@@ -81,6 +81,10 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
         Route::patch('verify/{id}', [DepositManagerController::class, 'verify']);
     });
 
+    /**
+     * Cashflow management routes.
+     * Get /api/admin/cashflow -> list all cashflows
+     */
     Route::prefix('cashflow')->group(function () {
         Route::get('/', [CashflowManagerController::class, 'index']);
     });

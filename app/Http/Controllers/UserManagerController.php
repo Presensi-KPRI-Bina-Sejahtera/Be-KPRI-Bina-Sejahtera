@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserController extends Controller
+class UserManagerController extends Controller
 {
     /**
      * Ambil daftar semua user.
