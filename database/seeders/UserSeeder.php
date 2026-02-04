@@ -17,7 +17,6 @@ class UserSeeder extends Seeder
         }
 
         User::create([
-            'presence_location_id' => $location->id,
             'username' => 'testuser',
             'name' => 'Test User',
             'role' => 'admin',
@@ -35,7 +34,6 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'presence_location_id' => $location->id,
             'username' => 'fauzan1',
             'name' => 'Fauzan Trisuladana',
             'role' => 'admin',
@@ -44,7 +42,6 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'presence_location_id' => $location->id,
             'username' => 'fauzan2',
             'name' => 'Muhammad Fauzan Putra Trisuladana',
             'role' => 'admin',
@@ -53,7 +50,6 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'presence_location_id' => $location->id,
             'username' => 'afif1',
             'name' => 'Abdullah Afif',
             'role' => 'admin',
@@ -62,7 +58,6 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'presence_location_id' => $location->id,
             'username' => 'afif2',
             'name' => 'Afef Space',
             'role' => 'admin',
@@ -80,7 +75,6 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'presence_location_id' => $location->id,
             'username' => 'rio1',
             'name' => 'Prihastomo Budisatrio',
             'role' => 'admin',

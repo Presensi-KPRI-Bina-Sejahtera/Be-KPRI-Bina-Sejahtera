@@ -47,8 +47,8 @@ class UserManagerController extends Controller
         $userData = collect($users->items())->map(function ($user) {
             return [
                 'id' => (int) $user->id,
-                'presence_location_id' => (int) $user->presence_location_id,
-                'presence_location_name' => $user->presenceLocation->name,
+                'presence_location_id' => $user->presence_location_id !== null ? (int) $user->presence_location_id : null,
+                'presence_location_name' => $user->presenceLocation?->name,
                 'username' => $user->username,
                 'name' => $user->name,
                 'email' => $user->email,
@@ -97,7 +97,7 @@ class UserManagerController extends Controller
     public function store(Request $request): Response
     {
         $validated = $request->validate([
-            'presence_location_id' => ['required', 'integer', 'exists:presence_locations,id'],
+            'presence_location_id' => ['nullable', 'integer', 'exists:presence_locations,id', 'required_if:role,employee'],
             'username' => ['nullable', 'string', 'unique:users,username'],
             'name' => ['required', 'string'],
             'email' => ['required', 'email', 'unique:users,email'],
@@ -106,6 +106,7 @@ class UserManagerController extends Controller
             'presence_location_id.required' => 'ID lokasi presensi wajib diisi',
             'presence_location_id.integer' => 'ID lokasi presensi harus berupa angka',
             'presence_location_id.exists' => 'ID lokasi presensi tidak valid',
+            'presence_location_id.required_if' => 'ID lokasi presensi wajib diisi untuk role employee',
             'username.string' => 'Username harus berupa teks',
             'username.unique' => 'Username sudah digunakan',
             'name.required' => 'Nama wajib diisi',
@@ -129,7 +130,7 @@ class UserManagerController extends Controller
             'message' => 'User berhasil ditambahkan',
             'data' => [
                 'id' => (int) $user->id,
-                'presence_location_id' => (int) $user->presence_location_id,
+                'presence_location_id' => $user->presence_location_id !== null ? (int) $user->presence_location_id : null,
                 'presence_location_name' => $user->presenceLocation?->name,
                 'username' => $user->username,
                 'name' => $user->name,
@@ -148,7 +149,7 @@ class UserManagerController extends Controller
     {
         $user = User::findOrFail($id);
         $validated = $request->validate([
-            'presence_location_id' => ['sometimes', 'integer', 'exists:presence_locations,id'],
+            'presence_location_id' => ['sometimes', 'nullable', 'integer', 'exists:presence_locations,id'],
             'username' => ['sometimes', 'nullable', 'string', Rule::unique('users', 'username')->ignore($user->id)],
             'name' => ['sometimes', 'string'],
             'email' => ['sometimes', 'email', Rule::unique('users', 'email')->ignore($user->id)],
@@ -163,6 +164,22 @@ class UserManagerController extends Controller
             'email.unique' => 'Email sudah digunakan',
             'role.in' => 'Role harus salah satu dari: employee, admin',
         ]);
+
+        $newRole = $validated['role'] ?? $user->role;
+        $newPresenceLocationId = array_key_exists('presence_location_id', $validated)
+            ? $validated['presence_location_id']
+            : $user->presence_location_id;
+
+        if ($newRole === 'employee' && empty($newPresenceLocationId)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'ID lokasi presensi wajib diisi untuk role employee',
+                'errors' => [
+                    'presence_location_id' => ['ID lokasi presensi wajib diisi untuk role employee'],
+                ],
+            ], 422);
+        }
+
         $user->update($validated);
         $user->refresh()->load('presenceLocation');
         return response()->json([
@@ -170,8 +187,8 @@ class UserManagerController extends Controller
             'message' => 'User berhasil diupdate',
             'data' => [
                 'id' => (int) $user->id,
-                'presence_location_id' => (int) $user->presence_location_id,
-                'presence_location_name' => $user->presenceLocation->name,
+                'presence_location_id' => $user->presence_location_id !== null ? (int) $user->presence_location_id : null,
+                'presence_location_name' => $user->presenceLocation?->name,
                 'username' => $user->username,
                 'name' => $user->name,
                 'email' => $user->email,

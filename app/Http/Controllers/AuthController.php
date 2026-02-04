@@ -67,6 +67,7 @@ class AuthController extends Controller
                     'username' => $user->username,
                     'email' => $user->email,
                     'role' => $user->role,
+                    'profile_image' => $user->getPhotoProfile(),
                 ],
             ],
         ]);
@@ -177,6 +178,7 @@ class AuthController extends Controller
                 'username' => $user->username,
                 'email' => $user->email,
                 'role' => $user->role,
+                'profile_image' => $user->getPhotoProfile(),
             ],
         ]);
     }
