@@ -22,6 +22,7 @@ class UserSeeder extends Seeder
             'name' => 'Test User',
             'role' => 'admin',
             'email' => 'test@example.com',
+            'password' => 'password',
         ]);
 
         User::create([
@@ -30,6 +31,7 @@ class UserSeeder extends Seeder
             'name' => 'Employee One',
             'role' => 'employee',
             'email' => 'test2@example.com',
+            'password' => 'password',
         ]);
 
         User::create([
@@ -38,6 +40,7 @@ class UserSeeder extends Seeder
             'name' => 'Fauzan Trisuladana',
             'role' => 'admin',
             'email' => 'fauzantrisuladana@gmail.com',
+            'password' => 'password',
         ]);
 
         User::create([
@@ -46,6 +49,7 @@ class UserSeeder extends Seeder
             'name' => 'Muhammad Fauzan Putra Trisuladana',
             'role' => 'admin',
             'email' => 'muhammadfauzanputratrisuladana@mail.ugm.ac.id',
+            'password' => 'password',
         ]);
 
         User::create([
@@ -54,6 +58,7 @@ class UserSeeder extends Seeder
             'name' => 'Abdullah Afif',
             'role' => 'admin',
             'email' => 'abdullahafifh@gmail.com',
+            'password' => 'password',
         ]);
 
         User::create([
@@ -62,6 +67,7 @@ class UserSeeder extends Seeder
             'name' => 'Afef Space',
             'role' => 'admin',
             'email' => 'afefspace@gmail.com',
+            'password' => 'password',
         ]);
 
         User::create([
@@ -70,6 +76,7 @@ class UserSeeder extends Seeder
             'name' => 'Catetan Saja',
             'role' => 'employee',
             'email' => 'catetansaja@gmail.com',
+            'password' => 'password',
         ]);
 
         User::create([
@@ -78,6 +85,7 @@ class UserSeeder extends Seeder
             'name' => 'Prihastomo Budisatrio',
             'role' => 'admin',
             'email' => 'prihastomobudisatrio2005@mail.ugm.ac.id',
+            'password' => 'password',
         ]);
     }
 }
