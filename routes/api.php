@@ -5,9 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserManagerController;
 use App\Http\Controllers\PresenceLocationController;
-use App\Http\Controllers\DepositManagerController;
-use App\Http\Controllers\CashflowManagerController;
-use App\Http\Controllers\AttendanceManagerController;
+use App\Http\Controllers\DepositController;
+use App\Http\Controllers\CashflowController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ProfileController;
 
 /**
@@ -39,11 +39,14 @@ Route::prefix('auth')->group(function () {
  * Put /api/profile/update-password -> update current user password
  * Put /api/profile/photo -> update current user photo
  */
-Route::middleware('auth:sanctum')->prefix('profile')->group(function () {
-    Route::get('/me', [ProfileController::class, 'me']);
-    Route::put('/update', [ProfileController::class, 'update']);
-    Route::put('/update-password', [ProfileController::class, 'updatePassword']);
-    Route::put('/photo', [ProfileController::class, 'updatePhoto']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('profile')->group(function () {
+        Route::get('/me', [ProfileController::class, 'me']);
+        Route::put('/update', [ProfileController::class, 'update']);
+        Route::put('/update-password', [ProfileController::class, 'updatePassword']);
+        Route::put('/photo', [ProfileController::class, 'updatePhoto']);
+    });
+    Route::get('/address', [PresenceLocationController::class, 'getAddressFromCoordinatesApi']);
 });
 
 /**
@@ -82,7 +85,6 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
         Route::put('/{id}', [PresenceLocationController::class, 'update']);
         Route::delete('/{id}', [PresenceLocationController::class, 'destroy']);
         Route::get('/dropdown', [PresenceLocationController::class, 'dropdown']);
-        Route::get('/address', [PresenceLocationController::class, 'getAddressFromCoordinatesApi']);
     });
 
     /**
@@ -91,8 +93,8 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
      * Patch /api/admin/deposit/verify/{id} -> verify deposit by id
      */
     Route::prefix('deposit')->group(function () {
-        Route::get('/', [DepositManagerController::class, 'index']);
-        Route::patch('verify/{id}', [DepositManagerController::class, 'verify']);
+        Route::get('/', [DepositController::class, 'index']);
+        Route::patch('verify/{id}', [DepositController::class, 'verify']);
     });
 
     /**
@@ -100,7 +102,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
      * Get /api/admin/cashflow -> list all cashflows
      */
     Route::prefix('cashflow')->group(function () {
-        Route::get('/', [CashflowManagerController::class, 'index']);
+        Route::get('/', [CashflowController::class, 'index']);
     });
 
     /**
@@ -108,6 +110,13 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
      * Get /api/admin/attendance -> list all attendances
      */
     Route::prefix('attendance')->group(function () {
-        Route::get('/', [AttendanceManagerController::class, 'index']);
+        Route::get('/', [AttendanceController::class, 'index']);
     });
+});
+
+/**
+ * Employee api routes.
+ */
+Route::middleware(['auth:sanctum', 'role:employee'])->prefix('employee')->group(function () {
+    // --- IGNORE ---
 });

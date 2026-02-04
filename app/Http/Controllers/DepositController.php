@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Validation\Rule;
 
-class DepositManagerController extends Controller
+class DepositController extends Controller
 {
     /**
      * Ambil daftar semua deposit.

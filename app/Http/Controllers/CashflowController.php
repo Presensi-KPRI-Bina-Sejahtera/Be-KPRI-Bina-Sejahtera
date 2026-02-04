@@ -7,7 +7,7 @@ use App\Models\Cashflow;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
-class CashflowManagerController extends Controller
+class CashflowController extends Controller
 {
     public function index(Request $request) : Response
     {

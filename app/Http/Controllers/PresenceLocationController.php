@@ -13,9 +13,6 @@ class PresenceLocationController extends Controller
     /**
      * Dapatkan alamat dari koordinat latitude dan longitude menggunakan Nominatim OpenStreetMap.
      */
-    /**
-     * Fungsi internal: dapatkan alamat dari koordinat (bisa dipanggil dari method lain)
-     */
     public function getAddressFromCoordinates($latitude, $longitude)
     {
         $userAgent = env('NOMINATIM_USER_AGENT', 'Presensi KRPIBS/1.0 (presensi@trisuladana.com)');
@@ -55,6 +52,7 @@ class PresenceLocationController extends Controller
             ],
         ]);
     }
+
     /**
      * Ambil daftar semua presence location.
      * GET /admin/presence-location

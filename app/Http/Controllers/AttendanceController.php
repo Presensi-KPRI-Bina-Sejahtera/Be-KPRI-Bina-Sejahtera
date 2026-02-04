@@ -7,7 +7,7 @@ use App\Models\Attendance;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
-class AttendanceManagerController extends Controller
+class AttendanceController extends Controller
 {
     /**
      * Ambil daftar semua presensi.
