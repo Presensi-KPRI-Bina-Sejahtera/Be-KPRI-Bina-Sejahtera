@@ -45,12 +45,16 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'username' => ['sometimes', 'string', 'max:255', Rule::unique('users', 'username')->ignore($user->id)],
         ], [
             'name.string' => 'Nama harus berupa teks',
             'name.max' => 'Nama maksimal :max karakter',
             'email.email' => 'Format email tidak valid',
             'email.max' => 'Email maksimal :max karakter',
             'email.unique' => 'Email sudah digunakan',
+            'username.string' => 'Username harus berupa teks',
+            'username.max' => 'Username maksimal :max karakter',
+            'username.unique' => 'Username sudah digunakan',
         ]);
 
         $user->forceFill($validated)->save();
