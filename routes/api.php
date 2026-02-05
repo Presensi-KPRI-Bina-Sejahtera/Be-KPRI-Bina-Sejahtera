@@ -9,6 +9,7 @@ use App\Http\Controllers\DepositController;
 use App\Http\Controllers\CashflowController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
 
 /**
  * Status check route.
@@ -112,6 +113,12 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
     Route::prefix('attendance')->group(function () {
         Route::get('/', [AttendanceController::class, 'index']);
     });
+
+    /**
+     * Dashboard routes.
+     * Get /api/admin/dashboard -> get dashboard data
+     */
+    Route::get('/dashboard', [DashboardController::class, 'index']);
 });
 
 /**

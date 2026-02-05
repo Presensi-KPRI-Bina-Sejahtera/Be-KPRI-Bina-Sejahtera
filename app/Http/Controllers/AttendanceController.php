@@ -84,7 +84,8 @@ class AttendanceController extends Controller
         $avgSecondsPerPerson = $totalUser > 0 ? ($totalSeconds / $totalUser) : 0;
 
         $summary = [
-            'work_hours_avg' => round($avgSecondsPerPerson / 3600, 2),
+            'work_hours_avg_perperson' => round($avgSecondsPerPerson / 3600, 2),
+            'work_hours_avg_perperson_perday' => round($avgSecondsPerPerson / 3600 / ((strtotime($endDate) - strtotime($startDate)) / 86400 + 1), 2),
         ];
 
         $query = (clone $baseQuery)
