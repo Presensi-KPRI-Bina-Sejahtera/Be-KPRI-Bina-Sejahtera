@@ -175,6 +175,10 @@ class DepositController extends Controller
         ], 200);
     }
 
+    /**
+     * Simpan data deposit baru per hari itu
+     * POST /api/deposits
+     */
     public function store(Request $request): Response
     {
         $validated = $request->validate([

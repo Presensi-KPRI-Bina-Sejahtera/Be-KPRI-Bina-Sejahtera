@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Attendance;
+use App\Models\PresenceLocation;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -193,5 +194,72 @@ class AttendanceController extends Controller
                 'work_duration_text' => $totalSeconds !== null ? sprintf('%02d Jam %02d Menit', $totalHours, $totalMinutes) : null,
             ],
         ], 200);
+    }
+
+    /**
+     * Simpan data presensi masuk untuk user yang sedang login.
+     * POST /api/attendance/check-in
+     */
+    public function checkIn(Request $request): Response
+    {
+        $validated = $request->validate([
+            'latitude' => ['required', 'numeric'],
+            'longitude' => ['required', 'numeric'],
+        ], [
+            'latitude.required' => 'Latitude wajib diisi',
+            'latitude.numeric' => 'Latitude harus berupa angka',
+            'longitude.required' => 'Longitude wajib diisi',
+            'longitude.numeric' => 'Longitude harus berupa angka',
+        ]);
+        $user = $request->user();
+        $today = today()->toDateString();
+
+        // Cek apakah sudah ada data presensi untuk hari ini
+        $existingAttendance = Attendance::where('user_id', $user->id)
+            ->where('date', $today)
+            ->where('type', 'datang')
+            ->first();
+
+        if ($existingAttendance) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Anda sudah melakukan presensi masuk hari ini',
+            ], 400);
+        }
+
+        $distance = PresenceLocation::calculateDistance(
+            $user->presenceLocation,
+            $validated['latitude'],
+            $validated['longitude'],
+        );
+
+        if ($distance >= $user->presenceLocation->max_distance) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Anda berada di luar jangkauan lokasi presensi yang diizinkan',
+                'data' => [
+                    'distance' => $distance,
+                    'max_distance' => $user->presenceLocation->max_distance,
+                ],
+            ], 400);
+        }
+
+        // Simpan data presensi masuk
+        $attendance = Attendance::create([
+            'user_id' => $user->id,
+            'date' => $today,
+            'type' => 'datang',
+            'time' => now()->format('H:i:s'),
+            'distance' => $distance,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Presensi masuk berhasil disimpan',
+            'data' => [
+                'time' => $attendance->time,
+                'distance' => $attendance->distance,
+            ],
+        ], 201);
     }
 }
