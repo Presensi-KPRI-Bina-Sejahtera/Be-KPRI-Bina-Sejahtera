@@ -233,6 +233,10 @@ class PresenceLocationController extends Controller
         ], 200);
     }
 
+    /**
+     * Ambil lokasi presensi user yang sedang login.
+     * GET /api/presence-location/my
+     */
     public function myPresenceLocation(Request $request): Response
     {
         $user = $request->user();

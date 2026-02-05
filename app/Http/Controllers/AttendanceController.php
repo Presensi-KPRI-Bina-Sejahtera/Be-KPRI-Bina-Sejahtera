@@ -138,6 +138,10 @@ class AttendanceController extends Controller
         ], 200);
     }
 
+    /**
+     * Ambil data presensi hari ini untuk user yang sedang login.
+     * GET /api/attendance/today
+     */
     public function today(Request $request): Response
     {
         $user = $request->user();
