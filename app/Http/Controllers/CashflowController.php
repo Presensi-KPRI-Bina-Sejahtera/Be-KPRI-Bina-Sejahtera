@@ -105,4 +105,50 @@ class CashflowController extends Controller
             ],
         ], 200);
     }
+
+    /**
+     * Simpan data cashflow baru per hari itu
+     * POST /api/cashflows
+     */
+    public function store(Request $request) : Response
+    {
+        $validated = $request->validate([
+            'pemasukan' => ['required', 'integer', 'min:1'],
+            'pengeluaran' => ['required', 'integer', 'min:1'],
+        ], [
+            'pemasukan.required' => 'Pemasukan wajib diisi',
+            'pemasukan.integer' => 'Pemasukan harus berupa angka',
+            'pemasukan.min' => 'Pemasukan minimal 1',
+            'pengeluaran.required' => 'Pengeluaran wajib diisi',
+            'pengeluaran.integer' => 'Pengeluaran harus berupa angka',
+            'pengeluaran.min' => 'Pengeluaran minimal 1',
+        ]);
+        $user = $request->user();
+        $pemasukan = Cashflow::create([
+            'user_id' => $user->id,
+            'type' => 'pemasukan',
+            'date' => today()->toDateString(),
+            'value' => $validated['pemasukan'],
+        ]);
+        $pengeluaran = Cashflow::create([
+            'user_id' => $user->id,
+            'type' => 'pengeluaran',
+            'date' => today()->toDateString(),
+            'value' => $validated['pengeluaran'],
+        ]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data cashflow untuk hari ini berhasil disimpan',
+            'data' => [
+                'pemasukan' => [
+                    'date' => $pemasukan->date->format('Y-m-d'),
+                    'value' => (int) $pemasukan->value,
+                ],
+                'pengeluaran' => [
+                    'date' => $pengeluaran->date->format('Y-m-d'),
+                    'value' => (int) $pengeluaran->value,
+                ],
+            ],
+        ], 201);
+    }
 }
