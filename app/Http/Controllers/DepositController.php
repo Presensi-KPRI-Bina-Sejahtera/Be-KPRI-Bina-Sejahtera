@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class DepositController extends Controller
 {
@@ -172,5 +173,70 @@ class DepositController extends Controller
                 'verified_key' => $deposit->verified_key,
             ],
         ], 200);
+    }
+
+    public function store(Request $request): Response
+    {
+        $validated = $request->validate([
+            'deposits' => ['required', 'array', 'min:1'],
+            'deposits.*.for_name' => ['required', 'string', 'max:255'],
+            'deposits.*.type' => ['required', Rule::in(['simpanan', 'angsuran'])],
+            'deposits.*.value' => ['required', 'integer', 'min:1'],
+        ], [
+            'deposits.required' => 'Data deposit wajib diisi',
+            'deposits.array' => 'Data deposit harus berupa array',
+            'deposits.min' => 'Data deposit minimal berisi :min item',
+            'deposits.*.for_name.required' => 'Nama untuk deposit wajib diisi',
+            'deposits.*.for_name.string' => 'Nama untuk deposit harus berupa teks',
+            'deposits.*.for_name.max' => 'Nama untuk deposit maksimal :max karakter',
+            'deposits.*.type.required' => 'Tipe deposit wajib diisi',
+            'deposits.*.type.in' => 'Tipe deposit harus salah satu dari: simpanan, angsuran',
+            'deposits.*.value.required' => 'Nilai deposit wajib diisi',
+            'deposits.*.value.integer' => 'Nilai deposit harus berupa angka',
+            'deposits.*.value.min' => 'Nilai deposit minimal :min',
+        ]);
+
+        $user = $request->user();
+
+        $results = [
+            'created' => [],
+            'failed' => [],
+        ];
+
+
+        DB::beginTransaction();
+        foreach ($validated['deposits'] as $depositData) {
+            $deposit = Deposit::create([
+                'user_id' => $user->id,
+                'for_name' => $depositData['for_name'],
+                'type' => $depositData['type'],
+                'date' => today()->toDateString(),
+                'value' => $depositData['value'],
+                'verified_key' => null,
+            ]);
+            $results['created'][] = [
+                'for_name' => $deposit->for_name,
+                'type' => $deposit->type,
+                'date' => $deposit->date->format('Y-m-d'),
+                'value' => (int) $deposit->value,
+            ];
+        }
+
+        if (count($results['failed']) > 0) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Beberapa data deposit gagal disimpan',
+                'data' => $results,
+            ], 400);
+        }
+
+        DB::commit();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data deposit berhasil disimpan',
+            'data' => $results['created'],
+        ], 201);
     }
 }
