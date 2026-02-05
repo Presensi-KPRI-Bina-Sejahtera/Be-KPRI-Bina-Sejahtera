@@ -133,17 +133,21 @@ Route::middleware(['auth:sanctum', 'role:employee'])->prefix('employee')->group(
 
     /**
      * Deposit routes.
+     * Get /api/employee/deposit -> get today's deposits
      * Post /api/employee/deposit -> create new deposit
      */
     Route::prefix('deposit')->group(function () {
+        Route::get('/', [DepositController::class, 'todayDeposits']);
         Route::post('/', [DepositController::class, 'store']);
     });
 
     /**
      * Cashflow routes.
+     * Get /api/employee/cashflow -> get today's cashflows
      * Post /api/employee/cashflow -> create new cashflow
      */
     Route::prefix('cashflow')->group(function () {
+        Route::get('/', [CashflowController::class, 'todayCashflows']);
         Route::post('/', [CashflowController::class, 'store']);
     });
 

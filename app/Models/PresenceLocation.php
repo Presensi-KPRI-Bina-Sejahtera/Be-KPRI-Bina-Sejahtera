@@ -28,10 +28,10 @@ class PresenceLocation extends Model
         return $this->hasMany(User::class);
     }
 
-    public static function calculateDistance(PresenceLocation $location, float $latitude, float $longitude): float
+    public static function calculateDistance(?PresenceLocation $location, float $latitude, float $longitude): int
     {
         if (!$location) {
-            return PHP_FLOAT_MAX;
+            return PHP_INT_MAX;
         }
 
         $earthRadius = 6371e3; // in meters
