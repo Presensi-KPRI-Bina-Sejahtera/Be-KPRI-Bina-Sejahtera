@@ -243,4 +243,35 @@ class DepositController extends Controller
             'data' => $results['created'],
         ], 201);
     }
+
+    /**
+     * Ambil daftar deposit user hari ini.
+     * GET /api/deposits/today
+     */
+    public function todayDeposits(Request $request): Response
+    {
+        $user = $request->user();
+
+        $deposits = Deposit::where('user_id', $user->id)
+            ->whereDate('date', today()->toDateString())
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $depositData = $deposits->map(function (Deposit $deposit) {
+            return [
+                'id' => (int) $deposit->id,
+                'for_name' => $deposit->for_name,
+                'type' => $deposit->type,
+                'date' => $deposit->date->format('Y-m-d'),
+                'value' => (int) $deposit->value,
+                'verified_key' => $deposit->verified_key,
+            ];
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Daftar deposit hari ini berhasil diambil',
+            'data' => $depositData,
+        ], 200);
+    }
 }

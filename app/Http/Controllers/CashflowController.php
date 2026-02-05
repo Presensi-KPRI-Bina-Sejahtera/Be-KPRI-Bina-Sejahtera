@@ -124,6 +124,8 @@ class CashflowController extends Controller
             'pengeluaran.min' => 'Pengeluaran minimal 1',
         ]);
         $user = $request->user();
+
+        DB::beginTransaction();
         $pemasukan = Cashflow::create([
             'user_id' => $user->id,
             'type' => 'pemasukan',
@@ -136,6 +138,16 @@ class CashflowController extends Controller
             'date' => today()->toDateString(),
             'value' => $validated['pengeluaran'],
         ]);
+
+        if (!$pemasukan || !$pengeluaran) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal menyimpan data cashflow untuk hari ini',
+            ], 500);
+        }
+
+        DB::commit();
         return response()->json([
             'status' => 'success',
             'message' => 'Data cashflow untuk hari ini berhasil disimpan',
@@ -150,5 +162,37 @@ class CashflowController extends Controller
                 ],
             ],
         ], 201);
+    }
+
+    public function todayCashflows(Request $request) : Response
+    {
+        $user = $request->user();
+
+        $pemasukan = Cashflow::where('user_id', $user->id)
+            ->where('type', 'pemasukan')
+            ->whereDate('date', today()->toDateString())
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $pengeluaran = Cashflow::where('user_id', $user->id)
+            ->where('type', 'pengeluaran')
+            ->whereDate('date', today()->toDateString())
+            ->orderBy('id', 'desc')
+            ->first();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Daftar cashflow hari ini berhasil diambil',
+            'data' => [
+                'pemasukan' => [
+                    'date' => $pemasukan->date->format('Y-m-d'),
+                    'value' => (int) $pemasukan->value,
+                ],
+                'pengeluaran' => [
+                    'date' => $pengeluaran->date->format('Y-m-d'),
+                    'value' => (int) $pengeluaran->value,
+                ],
+            ],
+        ], 200);
     }
 }
