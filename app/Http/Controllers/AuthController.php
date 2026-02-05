@@ -47,6 +47,19 @@ class AuthController extends Controller
 
         $tokenName = $validated['device_name'] ?? 'api';
         $isAndroid = stripos($tokenName, 'android') !== false;
+
+        if ($isAndroid && $user->role !== 'employee') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hanya user dengan role employee yang dapat login dari perangkat Android',
+            ], 403);
+        } else if (!$isAndroid && $user->role !== 'admin') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hanya user dengan role admin yang dapat login dari web',
+            ], 403);
+        }
+
         $expiresAt = $isAndroid ? null : now()->addDay(3);
 
         $token = $user->createToken(
@@ -159,6 +172,19 @@ class AuthController extends Controller
 
         $tokenName = $validated['device_name'] ?? 'google-login';
         $isAndroid = stripos($tokenName, 'android') !== false;
+
+        if ($isAndroid && $user->role !== 'employee') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hanya user dengan role employee yang dapat login dari perangkat Android',
+            ], 403);
+        } else if (!$isAndroid && $user->role !== 'admin') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Hanya user dengan role admin yang dapat login dari web',
+            ], 403);
+        }
+
         $expiresAt = $isAndroid ? null : now()->addDay(3);
 
         $token = $user->createToken(
