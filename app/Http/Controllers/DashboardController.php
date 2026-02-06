@@ -195,15 +195,15 @@ class DashboardController extends Controller
             $user = $attendance->user;
             $date = $attendance->date;
             $time = $attendance->time;
-            $pemasukan = Cashflow::where('type', 'pemasukan')
+            $pemasukanTabel = Cashflow::where('type', 'pemasukan')
                 ->where('user_id', $attendance->user_id)
                 ->whereDate('date', $date)
                 ->sum('value');
-            $pengeluaran = Cashflow::where('type', 'pengeluaran')
+            $pengeluaranTabel = Cashflow::where('type', 'pengeluaran')
                 ->where('user_id', $attendance->user_id)
                 ->whereDate('date', $date)
                 ->sum('value');
-            $deposit = Deposit::where('user_id', $attendance->user_id)
+            $depositTabel = Deposit::where('user_id', $attendance->user_id)
                 ->whereDate('date', $date)
                 ->sum('value');
             $pulang_laporan_setoran[] = [
@@ -215,9 +215,9 @@ class DashboardController extends Controller
                 ],
                 'date' => $date->format('Y-m-d'),
                 'time' => $time->format('H:i:s'),
-                'pemasukan' => (int) $pemasukan,
-                'pengeluaran' => (int) $pengeluaran,
-                'deposit' => (int) $deposit,
+                'pemasukan' => (int) $pemasukanTabel,
+                'pengeluaran' => (int) $pengeluaranTabel,
+                'deposit' => (int) $depositTabel,
             ];
         }
         /**
