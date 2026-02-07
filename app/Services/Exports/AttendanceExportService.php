@@ -3,6 +3,7 @@
 namespace App\Services\Exports;
 
 use App\Models\Attendance;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -20,6 +21,7 @@ class AttendanceExportService
     {
         $search = $filters['search'] ?? null;
         $userId = $filters['user_id'] ?? null;
+        $namaUser = null;
 
         $startDate = $filters['start_date'] ?? now()->startOfMonth()->toDateString();
         $endDate = $filters['end_date'] ?? today()->toDateString();
@@ -44,7 +46,7 @@ class AttendanceExportService
 
         if ($userId) {
             $baseQuery->where('user_id', $userId);
-            $namaUser= Attendance::query()
+            $namaUser = Attendance::query()
                 ->where('user_id', $userId)
                 ->with('user:id,name,username')
                 ->first()
@@ -60,7 +62,9 @@ class AttendanceExportService
             ->orderBy('user_id', 'asc')
             ->get();
 
-        $fileName = 'presensi_' . ($search ? $search . '_' : '') . ($namaUser ?? 'all_users') . '_' . $startDate . '_sampai_' . $endDate . '.xlsx';
+        $safeSearch = $search ? (Str::slug($search, '_') ?: null) : null;
+        $safeUser = Str::slug($namaUser ?? 'all_users', '_') ?: 'all_users';
+        $fileName = 'presensi_' . ($safeSearch ? $safeSearch . '_' : '') . $safeUser . '_' . $startDate . '_sampai_' . $endDate . '.xlsx';
 
         $border = OpenSpoutStyleFactory::thinBorder();
         $headerStyle = OpenSpoutStyleFactory::headerStyle($border);

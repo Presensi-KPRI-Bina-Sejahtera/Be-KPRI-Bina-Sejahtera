@@ -3,6 +3,7 @@
 namespace App\Services\Exports;
 
 use App\Models\Deposit;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DepositExportService
@@ -56,9 +57,10 @@ class DepositExportService
             ->orderBy('id', 'desc')
             ->get();
 
-        $safeType = $type ?: 'setoran_angsuran';
-        $safeStatus = $status ?: 'terkonfirmasi_dan_belum_terkonfirmasi';
-        $fileName = 'deposit_' . ($search ? $search . '_' : '') . $safeType . '_' . $safeStatus . '_' . $startDate . '_sampai_' . $endDate . '.xlsx';
+        $safeSearch = $search ? (Str::slug($search, '_') ?: null) : null;
+        $safeType = Str::slug($type ?: 'setoran_angsuran', '_') ?: 'setoran_angsuran';
+        $safeStatus = Str::slug($status ?: 'terkonfirmasi_dan_belum_terkonfirmasi', '_') ?: 'terkonfirmasi_dan_belum_terkonfirmasi';
+        $fileName = 'deposit_' . ($safeSearch ? $safeSearch . '_' : '') . $safeType . '_' . $safeStatus . '_' . $startDate . '_sampai_' . $endDate . '.xlsx';
 
         $border = OpenSpoutStyleFactory::thinBorder();
         $headerStyle = OpenSpoutStyleFactory::headerStyle($border);

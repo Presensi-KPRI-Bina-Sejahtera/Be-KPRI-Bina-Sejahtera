@@ -47,8 +47,8 @@ class CashflowExportService
             ->orderBy('id', 'desc')
             ->get();
 
-        $safeType = $type ?: 'pemasukan_pengeluaran';
-        $safeSearch = $search ? Str::slug($search, '_') : null;
+        $safeSearch = $search ? (Str::slug($search, '_') ?: null) : null;
+        $safeType = Str::slug($type ?: 'pemasukan_pengeluaran', '_') ?: 'pemasukan_pengeluaran';
         $fileName = 'cashflow_' . ($safeSearch ? $safeSearch . '_' : '') . $safeType . '_' . $startDate . '_sampai_' . $endDate . '.xlsx';
 
         $border = OpenSpoutStyleFactory::thinBorder();
