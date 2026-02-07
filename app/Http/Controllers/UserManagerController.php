@@ -116,11 +116,6 @@ class UserManagerController extends Controller
             'email.unique' => 'Email sudah digunakan',
             'role.required' => 'Role wajib diisi',
             'role.in' => 'Role harus salah satu dari: employee, admin',
-            'profile_image.string' => 'Profile image harus berupa teks',
-            'provider.string' => 'Provider harus berupa teks',
-            'id_provider.string' => 'ID provider harus berupa teks',
-            'password.string' => 'Password harus berupa teks',
-            'password.min' => 'Password minimal :min karakter',
         ]);
 
         $user = User::create($validated);
