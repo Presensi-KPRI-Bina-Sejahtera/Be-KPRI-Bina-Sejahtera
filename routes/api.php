@@ -95,6 +95,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
      */
     Route::prefix('deposit')->group(function () {
         Route::get('/', [DepositController::class, 'index']);
+        Route::get('/export-excel', [DepositController::class, 'exportExcel']);
         Route::patch('verify/{id}', [DepositController::class, 'verify']);
     });
 
@@ -104,6 +105,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
      */
     Route::prefix('cashflow')->group(function () {
         Route::get('/', [CashflowController::class, 'index']);
+        Route::get('/export-excel', [CashflowController::class, 'exportExcel']);
     });
 
     /**
@@ -111,6 +113,7 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(functi
      * Get /api/admin/attendance -> list all attendances
      */
     Route::prefix('attendance')->group(function () {
+        Route::get('/export-excel', [AttendanceController::class, 'exportExcel']);
         Route::get('/', [AttendanceController::class, 'index']);
     });
 

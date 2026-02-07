@@ -138,8 +138,8 @@ class DashboardController extends Controller
          */
         $grafikLabels = [];
         $workHourData = [];
-        $pemasukandata = [];
-        $pengeluarandata = [];
+        $pemasukanData = [];
+        $pengeluaranData = [];
         $hariIndo = [
             'Sunday' => 'Minggu',
             'Monday' => 'Senin',
@@ -152,7 +152,7 @@ class DashboardController extends Controller
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i)->toDateString();
             $dayName = $hariIndo[date('l', strtotime($date))];
-            $workHourLabels[] = $dayName;
+            $grafikLabels[] = $dayName;
             $dailySummarySubQuery = (clone $baseQuery)
                 ->toBase()
                 ->reorder()
@@ -176,8 +176,8 @@ class DashboardController extends Controller
             $dailyPengeluaran = Cashflow::where('type', 'pengeluaran')
                 ->whereDate('date', $date)
                 ->sum('value');
-            $pemasukandata[] = (int) $dailyPemasukan;
-            $pengeluarandata[] = (int) $dailyPengeluaran;
+            $pemasukanData[] = (int) $dailyPemasukan;
+            $pengeluaranData[] = (int) $dailyPengeluaran;
         }
 
         /**
@@ -254,8 +254,8 @@ class DashboardController extends Controller
                         'data' => $workHourData,
                     ],
                     'cashflows' => [
-                        'pemasukan' => $pemasukandata,
-                        'pengeluaran' => $pengeluarandata,
+                        'pemasukan' => $pemasukanData,
+                        'pengeluaran' => $pengeluaranData,
                     ],
                 ],
                 'pulang_laporan_setoran' => $pulang_laporan_setoran

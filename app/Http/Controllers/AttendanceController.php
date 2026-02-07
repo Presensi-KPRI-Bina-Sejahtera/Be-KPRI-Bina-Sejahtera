@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\PresenceLocation;
 use Illuminate\Support\Facades\DB;
+use App\Services\Exports\AttendanceExportService;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AttendanceController extends Controller
 {
@@ -64,12 +66,7 @@ class AttendanceController extends Controller
             $baseQuery->where('user_id', $userId);
         }
 
-        if ($startDate) {
-            $baseQuery->whereDate('date', '>=', $startDate);
-        }
-        if ($endDate) {
-            $baseQuery->whereDate('date', '<=', $endDate);
-        }
+        $baseQuery->whereBetween('date', [$startDate, $endDate]);
 
         $summarySubQuery = (clone $baseQuery)->toBase()->reorder();
 
@@ -138,6 +135,29 @@ class AttendanceController extends Controller
                 'attendances' => $attendanceData,
             ],
         ], 200);
+    }
+
+    /**
+     * Export daftar presensi (admin) ke Excel.
+     * GET /api/admin/attendance/export-excel
+     */
+    public function exportExcel(Request $request, AttendanceExportService $exportService): StreamedResponse
+    {
+        $validated = $request->validate([
+            'search' => ['sometimes', 'string'],
+            'start_date' => ['sometimes', 'date'],
+            'end_date' => ['sometimes', 'date', 'after_or_equal:start_date'],
+            'user_id' => ['sometimes', 'integer', 'exists:users,id'],
+        ], [
+            'search.string' => 'Search harus berupa teks',
+            'start_date.date' => 'Tanggal mulai harus berupa tanggal yang valid',
+            'end_date.date' => 'Tanggal selesai harus berupa tanggal yang valid',
+            'end_date.after_or_equal' => 'Tanggal selesai harus lebih besar atau sama dengan tanggal mulai',
+            'user_id.integer' => 'User harus berupa angka',
+            'user_id.exists' => 'User tidak ditemukan',
+        ]);
+
+        return $exportService->exportAttendanceToXlsx($validated);
     }
 
     /**

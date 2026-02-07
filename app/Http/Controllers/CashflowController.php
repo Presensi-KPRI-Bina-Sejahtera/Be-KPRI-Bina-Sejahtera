@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cashflow;
+use App\Services\Exports\CashflowExportService;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CashflowController extends Controller
 {
@@ -104,6 +106,28 @@ class CashflowController extends Controller
                 'cashflows' => $cashflowData,
             ],
         ], 200);
+    }
+
+    /**
+     * Export daftar cashflow (admin) ke Excel.
+     * GET /api/admin/cashflow/export-excel
+     */
+    public function exportExcel(Request $request, CashflowExportService $exportService): StreamedResponse
+    {
+        $validated = $request->validate([
+            'search' => ['sometimes', 'string'],
+            'start_date' => ['sometimes', 'date'],
+            'end_date' => ['sometimes', 'date', 'after_or_equal:start_date'],
+            'type' => ['sometimes', 'string', 'in:pemasukan,pengeluaran'],
+        ], [
+            'search.string' => 'Search harus berupa teks',
+            'start_date.date' => 'Tanggal mulai harus berupa tanggal yang valid',
+            'end_date.date' => 'Tanggal selesai harus berupa tanggal yang valid',
+            'type.in' => 'Type harus salah satu dari: pemasukan, pengeluaran',
+            'end_date.after_or_equal' => 'Tanggal selesai harus lebih besar atau sama dengan tanggal mulai',
+        ]);
+
+        return $exportService->exportCashflowToXlsx($validated);
     }
 
     /**

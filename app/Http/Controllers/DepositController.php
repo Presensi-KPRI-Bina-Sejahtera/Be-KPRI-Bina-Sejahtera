@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Deposit;
+use App\Services\Exports\DepositExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 
@@ -127,6 +129,30 @@ class DepositController extends Controller
                 'deposits' => $depositData,
             ],
         ], 200);
+    }
+
+    /**
+     * Export daftar deposit (admin) ke Excel.
+     * GET /api/admin/deposit/export-excel
+     */
+    public function exportExcel(Request $request, DepositExportService $exportService): StreamedResponse
+    {
+        $validated = $request->validate([
+            'search' => ['sometimes', 'string'],
+            'start_date' => ['sometimes', 'date'],
+            'end_date' => ['sometimes', 'date', 'after_or_equal:start_date'],
+            'type' => ['sometimes', 'string', 'in:angsuran,simpanan'],
+            'status' => ['sometimes', 'string', 'in:pending,verified'],
+        ], [
+            'search.string' => 'Search harus berupa teks',
+            'start_date.date' => 'Tanggal mulai harus berupa tanggal yang valid',
+            'end_date.date' => 'Tanggal selesai harus berupa tanggal yang valid',
+            'type.in' => 'Type harus salah satu dari: angsuran, simpanan',
+            'status.in' => 'Status harus salah satu dari: pending, verified',
+            'end_date.after_or_equal' => 'Tanggal selesai harus lebih besar atau sama dengan tanggal mulai',
+        ]);
+
+        return $exportService->exportDepositToXlsx($validated);
     }
 
     /**
