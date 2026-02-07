@@ -3,6 +3,7 @@
 namespace App\Services\Exports;
 
 use App\Models\Cashflow;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CashflowExportService
@@ -47,7 +48,8 @@ class CashflowExportService
             ->get();
 
         $safeType = $type ?: 'pemasukan_pengeluaran';
-        $fileName = 'cashflow_' . ($search ? $search . '_' : '') . $safeType . '_' . $startDate . '_sampai_' . $endDate . '.xlsx';
+        $safeSearch = $search ? Str::slug($search, '_') : null;
+        $fileName = 'cashflow_' . ($safeSearch ? $safeSearch . '_' : '') . $safeType . '_' . $startDate . '_sampai_' . $endDate . '.xlsx';
 
         $border = OpenSpoutStyleFactory::thinBorder();
         $headerStyle = OpenSpoutStyleFactory::headerStyle($border);

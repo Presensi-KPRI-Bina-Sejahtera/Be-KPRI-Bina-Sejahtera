@@ -72,6 +72,7 @@ class OpenSpoutXlsxExporter
             $writer->close();
         }, $fileName, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Access-Control-Expose-Headers' => 'Content-Disposition',
         ]);
     }
 
