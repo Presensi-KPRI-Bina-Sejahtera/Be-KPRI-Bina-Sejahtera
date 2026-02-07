@@ -81,8 +81,7 @@ class DashboardController extends Controller
                 DB::raw('MIN(CASE WHEN type = "datang" THEN time END) as jam_masuk'),
                 DB::raw('MAX(CASE WHEN type = "pulang" THEN time END) as jam_pulang'),
             ])
-            ->whereDate('date', '>=', $startDate)
-            ->whereDate('date', '<=', $endDate)
+            ->whereBetween('date', [$startDate, $endDate])
             ->groupBy('user_id', 'date');
 
         $summarySubQuery = (clone $baseQuery)->toBase()->reorder();
@@ -112,8 +111,7 @@ class DashboardController extends Controller
                 DB::raw('MIN(CASE WHEN type = "datang" THEN time END) as jam_masuk'),
                 DB::raw('MAX(CASE WHEN type = "pulang" THEN time END) as jam_pulang'),
             ])
-            ->whereDate('date', '>=', $lastMonthStart)
-            ->whereDate('date', '<=', $lastMonthEnd)
+            ->whereBetween('date', [$lastMonthStart, $lastMonthEnd])
             ->groupBy('user_id', 'date');
 
         $summarySubQueryLastMonth = (clone $baseQueryLastMonth)->toBase()->reorder();
