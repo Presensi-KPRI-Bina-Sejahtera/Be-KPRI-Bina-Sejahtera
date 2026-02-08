@@ -8,6 +8,7 @@ use App\Services\Exports\CashflowExportService;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\DB;
 
 class CashflowController extends Controller
 {
