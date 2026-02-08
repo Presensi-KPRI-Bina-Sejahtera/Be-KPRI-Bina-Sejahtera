@@ -164,12 +164,11 @@ class DepositController extends Controller
         $deposit = Deposit::findOrFail($id);
 
         $validated = $request->validate([
-            'verified_key' => ['required', 'string', 'max:255', Rule::unique('deposits', 'verified_key')],
+            'verified_key' => ['required', 'string', 'max:255'],
         ], [
             'verified_key.required' => 'Verified key wajib diisi',
             'verified_key.string' => 'Verified key harus berupa teks',
             'verified_key.max' => 'Verified key maksimal :max karakter',
-            'verified_key.unique' => 'Verified key sudah digunakan pada deposit lain',
         ]);
 
         $isEdit = !is_null($deposit->verified_key);
