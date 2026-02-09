@@ -138,15 +138,15 @@ class CashflowController extends Controller
     public function store(Request $request) : Response
     {
         $validated = $request->validate([
-            'pemasukan' => ['required', 'integer', 'min:1'],
-            'pengeluaran' => ['required', 'integer', 'min:1'],
+            'pemasukan' => ['required', 'integer', 'min:0'],
+            'pengeluaran' => ['required', 'integer', 'min:0'],
         ], [
             'pemasukan.required' => 'Pemasukan wajib diisi',
             'pemasukan.integer' => 'Pemasukan harus berupa angka',
-            'pemasukan.min' => 'Pemasukan minimal 1',
+            'pemasukan.min' => 'Pemasukan minimal 0',
             'pengeluaran.required' => 'Pengeluaran wajib diisi',
             'pengeluaran.integer' => 'Pengeluaran harus berupa angka',
-            'pengeluaran.min' => 'Pengeluaran minimal 1',
+            'pengeluaran.min' => 'Pengeluaran minimal 0',
         ]);
         $user = $request->user();
 
