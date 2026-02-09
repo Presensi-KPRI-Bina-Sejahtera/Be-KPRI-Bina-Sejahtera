@@ -57,6 +57,16 @@ class ProfileController extends Controller
             'username.unique' => 'Username sudah digunakan',
         ]);
 
+        if (isset($validated['email']) && $user->password === null) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Atur password terlebih dahulu untuk mengubah email',
+                'errors' => [
+                    'email' => ['Atur password terlebih dahulu untuk mengubah email'],
+                ],
+            ], 422);
+        }
+
         $user->forceFill($validated)->save();
         $user->refresh();
 
