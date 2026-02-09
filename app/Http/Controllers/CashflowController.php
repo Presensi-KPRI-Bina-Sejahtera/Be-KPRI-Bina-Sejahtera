@@ -150,6 +150,15 @@ class CashflowController extends Controller
         ]);
         $user = $request->user();
 
+        if (Cashflow::where('user_id', $user->id)
+            ->whereDate('date', today()->toDateString())
+            ->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data cashflow untuk hari ini sudah ada',
+            ], 400);
+        }
+
         DB::beginTransaction();
         $pemasukan = Cashflow::create([
             'user_id' => $user->id,
