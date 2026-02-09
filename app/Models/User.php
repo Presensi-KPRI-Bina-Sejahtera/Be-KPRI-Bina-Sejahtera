@@ -58,7 +58,7 @@ class User extends Authenticatable
 
     public function presenceLocation(): BelongsTo
     {
-        return $this->belongsTo(PresenceLocation::class);
+        return $this->belongsTo(PresenceLocation::class)->withTrashed();
     }
 
     public function attendances(): HasMany

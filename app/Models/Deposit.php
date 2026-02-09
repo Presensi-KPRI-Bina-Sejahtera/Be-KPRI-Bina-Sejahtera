@@ -26,6 +26,7 @@ class Deposit extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        // Antisipasi jika user di-soft delete: data deposit tetap bisa di-load.
+        return $this->belongsTo(User::class)->withTrashed();
     }
 }
