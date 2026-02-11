@@ -20,13 +20,23 @@ class CashflowSeeder extends Seeder
         $types = ['pemasukan', 'pengeluaran'];
         $now = now();
 
+        $usedDates = [];
+
         foreach ($users as $user) {
             foreach (range(1, 5) as $i) {
                 $type = Arr::random($types);
+
+                // Generate a unique date for this user
+                do {
+                    $date = $now->copy()->subDays(rand(0, 30))->toDateString();
+                } while (in_array($date, $usedDates));
+
+                $usedDates[] = $date;
+
                 Cashflow::create([
                     'user_id' => $user->id,
                     'type' => $type,
-                    'date' => $now->copy()->subDays(rand(0, 30)),
+                    'date' => $date,
                     'value' => rand(10000, 1000000),
                 ]);
             }

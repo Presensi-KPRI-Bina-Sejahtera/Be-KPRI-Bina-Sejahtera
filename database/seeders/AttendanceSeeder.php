@@ -18,10 +18,17 @@ class AttendanceSeeder extends Seeder
 
         $now = now();
 
+        $usedDates = [];
+
         foreach ($users as $user) {
             // Seed 15 hari terakhir
             foreach (range(0, 14) as $daysAgo) {
-                $date = $now->copy()->subDays($daysAgo)->toDateString();
+                // Generate a unique date for this user
+                do {
+                    $date = $now->copy()->subDays($daysAgo)->toDateString();
+                } while (in_array($date, $usedDates));
+
+                $usedDates[] = $date;
 
                 // Jam datang: 07:00 - 09:30
                 $datangHour = rand(7, 9);
