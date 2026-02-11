@@ -18,10 +18,9 @@ class AttendanceSeeder extends Seeder
 
         $now = now();
 
-        $usedDates = [];
-
         foreach ($users as $user) {
             // Seed 15 hari terakhir
+            $usedDates = [];
             foreach (range(0, 14) as $daysAgo) {
                 // Generate a unique date for this user
                 do {

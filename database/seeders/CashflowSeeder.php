@@ -20,9 +20,9 @@ class CashflowSeeder extends Seeder
         $types = ['pemasukan', 'pengeluaran'];
         $now = now();
 
-        $usedDates = [];
 
         foreach ($users as $user) {
+            $usedDates = [];
             foreach (range(1, 5) as $i) {
                 $type = Arr::random($types);
 
