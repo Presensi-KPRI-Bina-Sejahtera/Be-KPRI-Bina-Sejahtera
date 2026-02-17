@@ -15,6 +15,7 @@ class Cashflow extends Model
         'date',
         'type',
         'value',
+        'keterangan',
     ];
 
     protected $casts = [

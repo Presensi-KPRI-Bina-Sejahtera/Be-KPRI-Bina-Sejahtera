@@ -61,6 +61,7 @@ class CashflowExportService
             'Tipe',
             'Tanggal',
             'Value',
+            'Keterangan',
         ];
 
         $rows = $cashflows->map(function (Cashflow $cashflow) {
@@ -73,6 +74,7 @@ class CashflowExportService
                 $cashflow->type,
                 $dateText,
                 (int) $cashflow->value,
+                $cashflow->keterangan,
             ];
         });
 

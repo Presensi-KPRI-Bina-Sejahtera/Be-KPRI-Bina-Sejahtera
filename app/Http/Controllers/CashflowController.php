@@ -44,7 +44,9 @@ class CashflowController extends Controller
             $baseQuery->where(function ($q) use ($search) {
                 $q->orWhereHas('user', function ($uq) use ($search) {
                     $uq->where('name', 'like', "%{$search}%")
-                        ->orWhere('username', 'like', "%{$search}%");
+                        ->orWhere('username', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('keterangan', 'like', "%{$search}%");
                 });
             });
         }
@@ -90,6 +92,7 @@ class CashflowController extends Controller
                 'type' => $cashflow->type,
                 'date' => $cashflow->date->format('Y-m-d'),
                 'value' => (int) $cashflow->value,
+                'keterangan' => $cashflow->keterangan,
             ];
         });
 
@@ -139,14 +142,18 @@ class CashflowController extends Controller
     {
         $validated = $request->validate([
             'pemasukan' => ['required', 'integer', 'min:0'],
+            'keterangan_pemasukan' => ['sometimes', 'string'],
             'pengeluaran' => ['required', 'integer', 'min:0'],
+            'keterangan_pengeluaran' => ['sometimes', 'string'],
         ], [
             'pemasukan.required' => 'Pemasukan wajib diisi',
             'pemasukan.integer' => 'Pemasukan harus berupa angka',
             'pemasukan.min' => 'Pemasukan minimal 0',
+            'keterangan_pemasukan.string' => 'Keterangan pemasukan harus berupa teks',
             'pengeluaran.required' => 'Pengeluaran wajib diisi',
             'pengeluaran.integer' => 'Pengeluaran harus berupa angka',
             'pengeluaran.min' => 'Pengeluaran minimal 0',
+            'keterangan_pengeluaran.string' => 'Keterangan pengeluaran harus berupa teks',
         ]);
         $user = $request->user();
 
@@ -165,12 +172,14 @@ class CashflowController extends Controller
             'type' => 'pemasukan',
             'date' => today()->toDateString(),
             'value' => $validated['pemasukan'],
+            'keterangan' => $validated['keterangan_pemasukan'] ?? null,
         ]);
         $pengeluaran = Cashflow::create([
             'user_id' => $user->id,
             'type' => 'pengeluaran',
             'date' => today()->toDateString(),
             'value' => $validated['pengeluaran'],
+            'keterangan' => $validated['keterangan_pengeluaran'] ?? null,
         ]);
 
         if (!$pemasukan || !$pengeluaran) {
@@ -189,10 +198,12 @@ class CashflowController extends Controller
                 'pemasukan' => [
                     'date' => $pemasukan->date->format('Y-m-d'),
                     'value' => (int) $pemasukan->value,
+                    'keterangan' => $pemasukan->keterangan,
                 ],
                 'pengeluaran' => [
                     'date' => $pengeluaran->date->format('Y-m-d'),
                     'value' => (int) $pengeluaran->value,
+                    'keterangan' => $pengeluaran->keterangan,
                 ],
             ],
         ], 201);
@@ -221,10 +232,12 @@ class CashflowController extends Controller
                 'pemasukan' => [
                     'date' => $pemasukan->date->format('Y-m-d'),
                     'value' => (int) $pemasukan->value,
+                    'keterangan' => $pemasukan->keterangan,
                 ],
                 'pengeluaran' => [
                     'date' => $pengeluaran->date->format('Y-m-d'),
                     'value' => (int) $pengeluaran->value,
+                    'keterangan' => $pengeluaran->keterangan,
                 ],
             ],
         ], 200);
