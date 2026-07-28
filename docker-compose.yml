@@ -11,11 +11,12 @@ services:
         volumes:
             - local_data:/app/storage/app/public
         networks:
-            - app-network
+            - shared-net
         restart: unless-stopped
 
 networks:
-  app-network:
+  shared-net:
+    external: true
 
 volumes:
   local_data:
