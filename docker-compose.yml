@@ -1,0 +1,22 @@
+services:
+    laravel:
+        build: 
+            context: .
+            dockerfile: Dockerfile
+        container_name: presensi
+        ports:
+            - 8001:80
+        env_file:
+            - ./.env
+        volumes:
+            - local_data:/app/storage/app/public
+        networks:
+            - app-network
+
+networks:
+  app-network:
+
+volumes:
+  local_data:
+
+
