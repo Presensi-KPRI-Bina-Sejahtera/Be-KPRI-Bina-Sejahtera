@@ -12,6 +12,7 @@ services:
             - local_data:/app/storage/app/public
         networks:
             - app-network
+        restart: unless-stopped
 
 networks:
   app-network:
