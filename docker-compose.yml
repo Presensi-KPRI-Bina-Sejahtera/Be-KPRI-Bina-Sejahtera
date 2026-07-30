@@ -12,7 +12,12 @@ services:
             - local_data:/app/storage/app/public
         networks:
             - shared-net
-        restart: unless-stopped
+        restart: always
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost/"]
+            interval: 5000s
+            timeout: 10s
+            retries: 3
 
 networks:
   shared-net:

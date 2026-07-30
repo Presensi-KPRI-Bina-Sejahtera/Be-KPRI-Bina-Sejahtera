@@ -1,4 +1,9 @@
-FROM dunglas/frankenphp:latest-php8.2
+FROM dunglas/frankenphp:php8.4
+
+RUN apt update && apt install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN install-php-extensions \
     pdo_mysql \
@@ -6,7 +11,8 @@ RUN install-php-extensions \
     intl \
     zip \
     bcmath \
-    opcache
+    opcache \
+    curl
 
 WORKDIR /app
 
